@@ -3,12 +3,15 @@ const fs = require('fs');
 const ID_AFILIADO_ML = "55954375"; 
 
 async function buscarMaisVendidos() {
-    console.log("Iniciando busca alternativa via Feed Aberto do Mercado Livre...");
+    console.log("Iniciando busca definitiva de Wheys na API publica...");
     
-    // Rota pública de ofertas em formato aberto - Livre do erro 403!
+    // Montagem blindada em pedaços pequenos para o chat não cortar nada no código
+    const protocolo = "https://";
     const subdominio = "api.";
-    const baseHot = "https://" + subdominio + "mercadolibre.com";
-    const url = baseHot + "/sites/MLB/hot_items?limit=100";
+    const dominioBase = "mercadolibre.com";
+    const rotaBusca = "/sites/MLB/search?q=whey%20protein&limit=50";
+    
+    const url = protocolo + subdominio + dominioBase + rotaBusca;
 
     try {
         const response = await fetch(url, {
@@ -22,25 +25,16 @@ async function buscarMaisVendidos() {
         }
 
         const data = await response.json();
-        
-        // Se a lista de mais vendidos gerais vier vazia ou mudar, joga um erro controlado
         const itens = data.results || [];
-        if (itens.length === 0) throw new Error("Nenhum item encontrado no feed.");
+        
+        if (itens.length === 0) throw new Error("Nenhum item encontrado.");
 
-        // Filtra os itens para garantir que estamos pegando Whey Protein e Suplementos
-        const suplementos = itens.filter(item => {
-            const titulo = (item.title || "").toLowerCase();
-            return titulo.includes("whey") || titulo.includes("protein") || titulo.includes("creatina") || titulo.includes("suplemento");
-        });
-
-        // Se o feed de ofertas do dia não tiver 100 Wheys específicos, pegamos os destaques disponíveis
-        const itensParaVitrine = suplementos.length > 0 ? suplementos : itens.slice(0, 100);
-
-        const produtosFormatados = itensParaVitrine.map(item => {
-            const partesUrl = (item.permalink || "").split("?");
-            const urlLimpa = partesUrl[0];
+        const produtosFormatados = itens.map(item => {
+            const linkOriginal = item.permalink || "";
+            const urlLimpa = linkOriginal.split("?")[0]; // Pega estritamente a parte estável do link
             
-            const linkAfiliado = "https://mercadolivre.com" + ID_AFILIADO_ML + "&target=" + encodeURIComponent(urlLimpa);
+            const baseAfiliado = "https://mercadolivre.com";
+            const linkAfiliado = baseAfiliado + ID_AFILIADO_ML + "&target=" + encodeURIComponent(urlLimpa);
 
             return {
                 id: item.id,
@@ -54,12 +48,11 @@ async function buscarMaisVendidos() {
         });
 
         fs.writeFileSync('produtos.json', JSON.stringify(produtosFormatados, null, 2));
-        console.log("SUCESSO ABSOLUTO! O arquivo produtos.json foi gerado com as ofertas liberadas!");
+        console.log("SUCESSO! O arquivo produtos.json foi gerado com os Wheys reais.");
 
     } catch (error) {
-        console.error("Erro no processamento alternativo:", error.message);
-        // Salva uma lista vazia ou simulação para não travar o deploy da Netlify
-        fs.writeFileSync('produtos.json', JSON.stringify([], null, 2));
+        console.error("Erro no processamento:", error.message);
+        process.exit(1);
     }
 }
 
