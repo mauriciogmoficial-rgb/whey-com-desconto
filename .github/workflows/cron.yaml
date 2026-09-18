@@ -2,7 +2,8 @@ name: Vitrine Diario
 
 on:
   schedule:
-    - cron: '0 9 * * *'
+    # CORREÇÃO: Usando aspas duplas corretas exigidas pelo GitHub
+    - cron: "0 9 * * *"
   workflow_dispatch:
 
 jobs:
