@@ -72,20 +72,24 @@
     const priceRange = document.getElementById('priceRange');
     const priceValue = document.getElementById('priceValue');
 
-    // Montagem da URL direto pelo navegador do cliente (Fura o bloqueio dos servidores!)
-    const url = "https://mercadolibre.com";
+    // CORREÇÃO DE CORS: Usamos o proxy AllOrigins adaptado para o navegador ler os dados sem bloqueio
+    const urlAlvo = "https://mercadolibre.com";
+    const urlCors = "https://allorigins.win" + encodeURIComponent(urlAlvo);
 
-    // 1. O próprio navegador busca os dados na hora do acesso
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
+    fetch(urlCors)
+        .then(response => {
+            if (!response.ok) throw new Error("Erro na rede.");
+            return response.json();
+        })
+        .then(proxyData => {
+            // Decodifica a string JSON interna que o AllOrigins devolve
+            const data = JSON.parse(proxyData.contents);
             const itens = data.results || [];
             
-            // Trata e estrutura os produtos de forma limpa na memória do navegador
             todosOsProdutos = itens.map(item => {
                 const linkOriginal = item.permalink || "";
-                const urlLimpa = linkOriginal.split("?")[0];
-                const linkAfiliado = "https://mercadolivre.com" + ID_AFILIADO_ML + "&target=" + encodeURIComponent(urlLimpa);
+                const urlLimpa = linkOriginal.split("?");
+                const linkAfiliado = "https://mercadolivre.com" + ID_AFILIADO_ML + "&target=" + encodeURIComponent(urlLimpa[0]);
                 
                 let imagemSegura = item.thumbnail ? item.thumbnail.replace("-I.jpg", "-O.jpg") : "";
                 if (imagemSegura.startsWith("http://")) {
