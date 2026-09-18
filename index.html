@@ -63,7 +63,7 @@
 
     <main class="main-content">
         <div class="product-grid" id="vitrine">
-            <div class="no-results">Buscando os Wheys mais vendidos direto do Mercado Livre...</div>
+            <div class="no-results">Buscando os Wheys mais vendidos do dia direto do Mercado Livre...</div>
         </div>
     </main>
 </div>
@@ -76,44 +76,38 @@
     const priceRange = document.getElementById('priceRange');
     const priceValue = document.getElementById('priceValue');
 
-    // Montagem da URL utilizando uma ponte CORS alternativa ultra leve e rápida
-    const urlAlvo = "https://mercadolibre.com";
-    const urlProxy = "https://codetabs.com" + encodeURIComponent(urlAlvo);
-
-    fetch(urlProxy)
-        .then(response => {
-            if (!response.ok) throw new Error("Falha no carregamento.");
-            return response.json();
-        })
-        .then(data => {
-            const itens = data.results || [];
+    // 1. Função global exigida pelo Mercado Livre para receber os dados limpos via JSONP
+    window.processarDadosML = function(data) {
+        const itens = data.results || [];
+        
+        todosOsProdutos = itens.map(item => {
+            const linkOriginal = item.permalink || "";
+            const urlLimpa = linkOriginal.split("?");
+            const linkAfiliado = "https://mercadolivre.com" + ID_AFILIADO_ML + "&target=" + encodeURIComponent(urlLimpa);
             
-            todosOsProdutos = itens.map(item => {
-                const linkOriginal = item.permalink || "";
-                const urlLimpa = linkOriginal.split("?")[0];
-                const linkAfiliado = "https://mercadolivre.com" + ID_AFILIADO_ML + "&target=" + encodeURIComponent(urlLimpa);
-                
-                let imagemSegura = item.thumbnail ? item.thumbnail.replace("-I.jpg", "-O.jpg") : "";
-                if (imagemSegura.startsWith("http://")) {
-                    imagemSegura = imagemSegura.replace("http://", "https://");
-                }
+            let imagemSegura = item.thumbnail ? item.thumbnail.replace("-I.jpg", "-O.jpg") : "";
+            if (imagemSegura.startsWith("http://")) {
+                imagemSegura = imagemSegura.replace("http://", "https://");
+            }
 
-                return {
-                    titulo: item.title,
-                    precoOriginal: item.original_price || item.price,
-                    precoAtual: item.price,
-                    imagem: imagemSegura,
-                    link: linkAfiliado,
-                    desconto: item.original_price ? Math.round(((item.original_price - item.price) / item.original_price) * 100) : 0
-                };
-            });
-
-            renderizarProdutos(todosOsProdutos);
-        })
-        .catch(err => {
-            console.error("Erro na busca de dados:", err);
-            vitrine.innerHTML = "<div class='no-results'>Erro ao conectar com o Mercado Livre. Atualize a página.</div>";
+            return {
+                titulo: item.title,
+                precoOriginal: item.original_price || item.price,
+                precoAtual: item.price,
+                imagem: imagemSegura,
+                link: linkAfiliado,
+                desconto: item.original_price ? Math.round(((item.original_price - item.price) / item.original_price) * 100) : 0
+            };
         });
+
+        renderizarProdutos(todosOsProdutos);
+    };
+
+    // 2. Criação do elemento de script que faz o desvio oficial sem bloqueios de CORS
+    const scriptTag = document.createElement('script');
+    // Adicionamos o parâmetro '&callback=processarDadosML' no final como manda o manual do FAQ deles!
+    scriptTag.src = "https://mercadolibre.com";
+    document.body.appendChild(scriptTag);
 
     function renderizarProdutos(lista) {
         vitrine.innerHTML = "";
