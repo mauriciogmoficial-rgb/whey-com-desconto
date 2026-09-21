@@ -68,7 +68,11 @@ def criar_pagina_web():
 </body>
 </html>"""
 
-    with open("index.html", "w", encoding="utf-8") as f:
+    import os
+    diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
+    caminho_index = os.path.join(diretorio_raiz, "index.html")
+    
+    with open(caminho_index, "w", encoding="utf-8") as f:
         f.write(html_final)
     print("Sucesso! index.html gerado.")
 
