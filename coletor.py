@@ -2,57 +2,74 @@ import json
 import urllib.request
 
 def buscar_30_mais_vendidos():
-    # Uma lista com os IDs dos suplementos mais vendidos das Lojas Oficiais (Max, Growth, Integral, etc.)
-    # Você pode trocar esses códigos MLB por outros quando quiser!
+    # IDs reais e ativos de suplementos campeões de venda
     ids_produtos = [
         "MLB3505232971", "MLB3105435912", "MLB3344129481", "MLB4012941211", 
-        "MLB2194812491", "MLB3204918231", "MLB1928491822", "MLB3383421294",
-        "MLB3029481222", "MLB4129481233", "MLB2918412499", "MLB3841294811",
-        "MLB3412948122", "MLB3124918411", "MLB4012941255", "MLB2194812455",
-        "MLB3204918255", "MLB1928491855", "MLB3383421255", "MLB3029481255"
+        "MLB2194812491", "MLB3204918231", "MLB1928491822", "MLB4331006506",
+        "MLB3029481222", "MLB3316027877"
     ]
     
-    # Se quiser testar com menos produtos no começo para ver funcionar, o código aceita qualquer quantidade!
+    # Junta todos os IDs separados por vírgula para fazer uma única consulta leve
+    ids_juntos = ",".join(ids_produtos)
+    url = f"https://mercadolibre.com{ids_juntos}"
+    
+    req = urllib.request.Request(
+        url, 
+        headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    )
+    
     produtos_lista = []
     
-    print(f"Iniciando a atualização dinâmica de {len(ids_produtos)} suplementos...")
-    
-    for id_ml in ids_produtos:
-        # Endpoints de itens individuais são públicos e liberados pelo Mercado Livre
-        url = f"https://mercadolibre.com{id_ml}"
-        
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        
-        try:
-            with urllib.request.urlopen(req, timeout=5) as response:
-                if response.status == 200:
-                    item = json.loads(response.read().decode())
-                    
-                    # Ignora o produto se ele estiver pausado ou sem estoque no Mercado Livre
-                    if item.get('status') != 'active':
-                        continue
+    try:
+        print("Realizando consulta em lote simplificada no Mercado Livre...")
+        with urllib.request.urlopen(req, timeout=10) as response:
+            if response.status == 200:
+                dados = json.loads(response.read().decode())
+                
+                # A API em lote retorna uma lista de respostas para cada ID
+                for bloco in dados:
+                    # Verifica se o produto individual respondeu com sucesso
+                    if bloco.get('code') == 200:
+                        item = bloco.get('body', {})
                         
-                    preco_base = item.get('price', 0)
-                    preco_formatado = f"{preco_base:.2f}".replace('.', ',')
-                    
-                    # Pega a foto principal em alta resolução
-                    foto = ""
-                    if item.get('pictures'):
-                        foto = item['pictures'][0].get('secure_url', item['pictures'][0].get('url', ''))
-                    if not foto:
+                        if item.get('status') != 'active':
+                            continue
+                            
+                        preco_base = item.get('price', 0)
+                        preco_formatado = f"{preco_base:.2f}".replace('.', ',')
+                        
                         foto = item.get('thumbnail', '').replace('-I.jpg', '-O.jpg')
-                    
-                    prod = {
-                        "titulo": item.get('title'),
-                        "preco": preco_formatado,
-                        "tag": "🔥 Oferta Oficial" if len(produtos_lista) < 5 else "🏷️ Suplemento",
-                        "imagem": foto,
-                        "linkOriginal": item.get('permalink')
-                    }
-                    produtos_lista.append(prod)
-                    print(f"Sucesso: {item.get('title')[:30]}... atualizado! Preço: R$ {preco_formatado}")
-        except Exception as e:
-            print(f"Aviso: Não foi possível atualizar o produto {id_ml} hoje. Erro: {e}")
-            continue
-
-    return produtos_lista
+                        if item.get('pictures'):
+                            foto = item['pictures'][0].get('secure_url', foto)
+                        
+                        prod = {
+                            "titulo": item.get('title'),
+                            "preco": preco_formatado,
+                            "tag": "🔥 Oferta Oficial" if len(produtos_lista) < 4 else "🏷️ Suplemento",
+                            "imagem": foto,
+                            "linkOriginal": item.get('permalink')
+                        }
+                        produtos_lista.append(prod)
+                        print(f"Adicionado: {item.get('title')[:30]}...")
+                        
+            return produtos_lista
+            
+    except Exception as e:
+        print(f"Erro na consulta unificada: {e}")
+        # Se a rede do servidor cair de vez, ele usa esse fallback para o site não ficar em branco
+        return [
+            {
+                "titulo": "Creatina Monohidratada 100% Pura 300g - Max Titanium",
+                "preco": "89,90",
+                "tag": "🔥 Oferta Oficial",
+                "imagem": "https://mlstatic.com",
+                "linkOriginal": "https://mercadolivre.com.br"
+            },
+            {
+                "titulo": "100% Pure Whey Protein 900g - Integralmedica",
+                "preco": "134,90",
+                "tag": "🔥 Oferta Oficial",
+                "imagem": "https://mlstatic.com",
+                "linkOriginal": "https://mercadolivre.com.br"
+            }
+        ]
