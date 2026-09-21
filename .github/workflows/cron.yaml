@@ -1,0 +1,33 @@
+name: Atualizar Vitrine Diariamente
+
+on:
+  schedule:
+    # 09:00 UTC corresponde às 06:00 do horário de Brasília
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Permite que você ative manualmente pelo painel
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Instalar Dependências
+      run: pip install requests
+
+    - name: Executar coletor de preços
+      run: python gerar_vitrine.py
+
+    - name: Commit e Push das alterações
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add index.html
+        git commit -m "Vitrine atualizada automaticamente às 06:00" || exit 0
+        git push
