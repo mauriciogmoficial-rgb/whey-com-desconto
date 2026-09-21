@@ -67,7 +67,7 @@ def criar_pagina_web():
 </script>
 </body>
 </html>"""
-
+    #so para dar commit
     import os
     diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
     caminho_index = os.path.join(diretorio_raiz, "index.html")
