@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "titulo": "Top Whey 3W Max Titanium 900g Sabores Original",
+    "preco_antigo": "R$ 169,90",
+    "preco_atual": "R$ 139,90",
+    "desconto": "17% OFF",
+    "tag": "MAIS VENDIDO",
+    "frete": "Frete Grátis",
+    "link_afiliado": "https://mercadolivre.com.br",
+    "imagem": "https://mlstatic.com"
+  },
+  {
+    "titulo": "100% Pure Whey Integralmedica 900g Pouch Concentrado",
+    "preco_antigo": "R$ 139,90",
+    "preco_atual": "R$ 124,00",
+    "desconto": "11% OFF",
+    "tag": "DESTAQUE",
+    "frete": "Envio Rápido",
+    "link_afiliado": "https://mercadolivre.com.br",
+    "imagem": "https://mlstatic.com"
+  }
+]

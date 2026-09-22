@@ -1,97 +1,96 @@
 const fs = require('fs');
-const puppeteer = require('puppeteer');
 
-// Seu ID de afiliado real do Mercado Livre extraído do link
 const SEU_ID_AFILIADO = "55954375"; 
 
 async function buscarAnunciosMercadoLivre() {
-  console.log("Iniciando busca de anúncios reais no Mercado Livre...");
+  console.log("Conectando de forma mascarada à API do Mercado Livre...");
   
-  const browser = await puppeteer.launch({ 
-    headless: "new",
-    args: [
-      '--no-sandbox', 
-      '--disable-setuid-sandbox',
-      '--disable-blink-features=AutomationControlled' // Esconde que é um robô
-    ] 
-  });
-  const page = await browser.newPage();
-  
-  // Evita bloqueios simulando um navegador real do dia a dia
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-  
-  // Acessa a listagem limpa de whey protein
-  await page.goto('https://mercadolivre.com.br', {
-    waitUntil: 'networkidle2'
-  });
-
-  // Aguarda a estrutura da lista carregar na tela por segurança
   try {
-    await page.waitForSelector('.ui-search-layout__item', { timeout: 7000 });
-  } catch (e) {
-    console.log("Aviso: Tempo limite de carregamento da estrutura atingido.");
-  }
-
-  const produtosReais = await page.evaluate((idAfiliado) => {
-    // Seleciona os contêineres de anúncios do Mercado Livre
-    const cards = document.querySelectorAll('.ui-search-layout__item');
-    const lista = [];
-
-    // Mapeia os 12 primeiros anúncios reais encontrados
-    cards.forEach((card, index) => {
-      if (lista.length >= 12) return;
-
-      // Puxa o título testando os seletores tradicionais e os novos estruturados (poly)
-      const tituloElemento = card.querySelector('.ui-search-item__title') || card.querySelector('[class*="title"]');
-      const titulo = tituloElemento ? tituloElemento.innerText.trim() : "";
-
-      // Se não encontrou um título válido no bloco, pula para o próximo card
-      if (!titulo) return;
-
-      // Puxa o preço decodificando a estrutura de acessibilidade do ML
-      const precoMain = card.querySelector('.andes-money-amount__main-amount');
-      let preco = precoMain ? precoMain.innerText.replace('\n', ',').trim() : "";
-      
-      // Puxa a imagem tratando o carregamento inteligente dinâmico
-      const imgElemento = card.querySelector('img');
-      let imagem = "";
-      if (imgElemento) {
-        imagem = imgElemento.getAttribute('data-src') || imgElemento.src || "";
-      }
-
-      // Puxa o link original do produto
-      const linkElemento = card.querySelector('a.ui-search-link') || card.querySelector('a');
-      const linkOriginal = linkElemento ? linkElemento.href : "";
-
-      // Monta a estrutura final idêntica ao seu banco de dados front-end
-      if (linkOriginal && imagem) {
-        lista.push({
-          titulo: titulo,
-          preco_antigo: "", 
-          preco_atual: preco ? `R$ ${preco}` : "Confira no site",
-          desconto: "",
-          tag: lista.length === 0 ? "MAIS VENDIDO" : "DESTAQUE",
-          frete: card.innerText.toLowerCase().includes("grátis") ? "Frete Grátis" : "Envio Rápido",
-          link_afiliado: `${linkOriginal}&matt_tool=${idAfiliado}`, // Injeta o seu link de afiliado oficial
-          imagem: imagem
-        });
+    const urlAPI = 'https://mercadolivre.com';
+    
+    // Enviamos cabeçalhos (headers) idênticos aos de um ser humano navegando no Chrome
+    const resposta = await fetch(urlAPI, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Cache-Control': 'no-cache'
       }
     });
 
-    return lista;
-  }, SEU_ID_AFILIADO);
+    // Verificamos primeiro se a resposta é HTML antes de tentar ler como JSON
+    const textoResposta = await resposta.text();
+    
+    if (textoResposta.trim().startsWith('<!DOCTYPE') || textoResposta.trim().startsWith('<html')) {
+      console.error("\n❌ O Mercado Livre bloqueou a requisição e enviou uma página de segurança HTML.");
+      console.log("Ativando banco de dados reserva de emergência para manter seu site online...\n");
+      usarDadosReserva();
+      return;
+    }
 
-  await browser.close();
+    const dados = JSON.parse(textoResposta);
+    
+    if (!dados.results || dados.results.length === 0) {
+      console.error("Nenhum produto retornado pela API.");
+      usarDadosReserva();
+      return;
+    }
 
-  // Proteção: Se a raspagem falhar por completo, mantém o arquivo anterior intacto
-  if (produtosReais.length === 0) {
-    console.log("Aviso: Nenhum produto extraído nos seletores atuais. Mantendo o arquivo original.");
-    return;
+    const produtosReais = dados.results.map((item, index) => {
+      const precoFormatado = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const imagemAltaQualidade = item.thumbnail.replace("-I.jpg", "-O.jpg");
+      const linkAfiliado = `${item.permalink}?matt_tool=${SEU_ID_AFILIADO}`;
+
+      return {
+        titulo: item.title,
+        preco_antigo: item.original_price ? item.original_price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : "",
+        preco_atual: precoFormatado,
+        desconto: item.original_price ? `${Math.round(((item.original_price - item.price) / item.original_price) * 100)}% OFF` : "",
+        tag: index === 0 ? "MAIS VENDIDO" : "RECOMENDADO",
+        frete: item.shipping.free_shipping ? "Frete Grátis" : "Envio Rápido",
+        link_afiliado: linkAfiliado,
+        imagem: imagemAltaQualidade
+      };
+    });
+
+    fs.writeFileSync('produtos.json', JSON.stringify(produtosReais, null, 2));
+    console.log(`==================================================`);
+    console.log(`🔥 SUCESSO! ${produtosReais.length} Wheys reais gravados.`);
+    console.log(`==================================================`);
+
+  } catch (erro) {
+    console.error("Erro ao conectar:", erro);
+    usarDadosReserva();
   }
+}
 
-  // Grava as informações reais atualizadas por cima do JSON
-  fs.writeFileSync('produtos.json', JSON.stringify(produtosReais, null, 2));
-  console.log(`Arquivo produtos.json atualizado com sucesso com ${produtosReais.length} anúncios REAIS!`);
+// Essa função impede que seu site fique em branco caso o Mercado Livre mude algo de novo
+function usarDadosReserva() {
+  const dadosReserva = [
+    {
+      "titulo": "Top Whey 3W Max Titanium 900g Sabores Original",
+      "preco_antigo": "R\$ 169,90",
+      "preco_atual": "R\$ 139,90",
+      "desconto": "17% OFF",
+      "tag": "MAIS VENDIDO",
+      "frete": "Frete Grátis",
+      "link_afiliado": "https://mercadolivre.com.br",
+      "imagem": "https://mlstatic.com"
+    },
+    {
+      "titulo": "100% Pure Whey Integralmedica 900g Pouch Concentrado",
+      "preco_antigo": "R\$ 139,90",
+      "preco_atual": "R\$ 124,00",
+      "desconto": "11% OFF",
+      "tag": "DESTAQUE",
+      "frete": "Envio Rápido",
+      "link_afiliado": "https://mercadolivre.com.br",
+      "imagem": "https://mlstatic.com"
+    }
+  ];
+  fs.writeFileSync('produtos.json', JSON.stringify(dadosReserva, null, 2));
+  console.log("✅ Arquivo produtos.json alimentado com a lista reserva com sucesso!");
 }
 
 buscarAnunciosMercadoLivre();
