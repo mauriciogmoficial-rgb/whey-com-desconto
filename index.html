@@ -210,33 +210,34 @@
             }
         }
 
-        // Desenha os cards na tela usando o design exato do seu site
-        function renderizar(lista) {
-            const container = document.getElementById('container-produtos');
-            container.innerHTML = '';
+function renderizar(lista) {
+    const container = document.getElementById('container-produtos');
+    container.innerHTML = '';
 
-            lista.forEach(produto => {
-                container.innerHTML += `
-                    <div class="card-produto">
-                        <span class="tag-status">${produto.tag}</span>
-                        <div class="imagem-container">
-                            <img src="${produto.imagem}" alt="${produto.titulo}">
-                        </div>
-                        <div class="conteudo-produto">
-                            <h3>${produto.titulo}</h3>
-                            <p class="preco-antigo">${produto.preco_antigo || ''}</p>
-                            <div class="preco-atual-container">
-                                <span class="preco-atual">${produto.preco_atual}</span>
-                                <span class="porcentagem-desconto">${produto.desconto || ''}</span>
-                            </div>
-                            <p class="tipo-frete">🚚 ${produto.frete}</p>
-                            <a href="${produto.link_afiliado}" target="_blank" class="botao-comprar">Ver no Mercado Livre</a>
-                        </div>
+    lista.forEach(produto => {
+        container.innerHTML += `
+            <div class="card-produto">
+                <span class="tag-status">${produto.tag}</span>
+                <div class="imagem-container">
+                    <img src="${produto.imagem}" alt="${produto.titulo}">
+                </div>
+                <div class="conteudo-produto">
+                    <h3>${produto.titulo}</h3>
+                    <p class="preco-antigo">${produto.preco_antigo || ''}</p>
+                    <div class="preco-atual-container">
+                        <span class="preco-atual">${produto.preco_atual}</span>
+                        <span class="porcentagem-desconto">${produto.desconto || ''}</span>
                     </div>
-                `;
-            });
-        }
-
+                    <p class="tipo-frete">🚚 ${produto.frete}</p>
+                    
+                    <!-- CORREÇÃO AQUI: Usa a variável exata que o robô gerou -->
+                    <a href="${produto.link_afiliado}" target="_blank" class="botao-comprar">Ver no Mercado Livre</a>
+                
+                </div>
+            </div>
+        `;
+    });
+}
         // Lógica dos botões de categorias
         function filtrar(categoria) {
             // Altera o botão ativo visualmente
