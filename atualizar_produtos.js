@@ -15,8 +15,8 @@ const browser = await puppeteer.launch({
 
   const page = await browser.newPage();
   
-  // Acessa a página de busca de Whey Protein filtrando pelos mais vendidos
-  await page.goto('https://mercadolivre.com.br[A:whey%20protein]', {
+  // URL simplificada e limpa para evitar erros de validação no navegador do GitHub
+  await page.goto('https://mercadolivre.com.br', {
     waitUntil: 'networkidle2'
   });
 
