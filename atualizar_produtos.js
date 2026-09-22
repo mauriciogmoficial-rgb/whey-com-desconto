@@ -8,7 +8,11 @@ async function buscarAnunciosMercadoLivre() {
   console.log("Iniciando busca de anúncios reais no Mercado Livre...");
   
   // Abre um navegador em segundo plano
-  const browser = await puppeteer.launch({ headless: true });
+const browser = await puppeteer.launch({ 
+  headless: "new",
+  args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+});
+
   const page = await browser.newPage();
   
   // Acessa a página de busca de Whey Protein filtrando pelos mais vendidos

@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *' # Roda automaticamente todo dia à meia-noite
   workflow_dispatch: # Permite que você clique em um botão para atualizar quando quiser
 
+permissions:
+  contents: write # Dá permissão para o robô salvar o JSON no seu repositório
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
     - name: Configurar Node.js
       uses: actions/setup-node@v3
       with:
-        node-node-version: 18
+        node-version: 18 # Corrigido aqui
 
     - name: Instalar Puppeteer (Navegador do Robô)
       run: npm install puppeteer
