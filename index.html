@@ -209,17 +209,21 @@
                 document.getElementById('container-produtos').innerHTML = "<p>Erro ao carregar os produtos. Tente recarregar a página.</p>";
             }
         }
-
+        
 function renderizar(lista) {
     const container = document.getElementById('container-produtos');
     container.innerHTML = '';
 
     lista.forEach(produto => {
+        // O próprio navegador monta o link do produto e da foto usando o ID
+        const linkRealCompleto = 'https://mercadolivre.com.br' + produto.id_produto + '?matt_tool=55954375';
+        const imagemRealCompleta = 'https://mlstatic.com_' + produto.id_imagem + '-O.jpg';
+
         container.innerHTML += `
             <div class="card-produto">
                 <span class="tag-status">${produto.tag}</span>
                 <div class="imagem-container">
-                    <img src="${produto.imagem}" alt="${produto.titulo}">
+                    <img src="${imagemRealCompleta}" alt="${produto.titulo}">
                 </div>
                 <div class="conteudo-produto">
                     <h3>${produto.titulo}</h3>
@@ -229,15 +233,13 @@ function renderizar(lista) {
                         <span class="porcentagem-desconto">${produto.desconto || ''}</span>
                     </div>
                     <p class="tipo-frete">🚚 ${produto.frete}</p>
-                    
-                    <!-- CORREÇÃO AQUI: Usa a variável exata que o robô gerou -->
-                    <a href="${produto.link_afiliado}" target="_blank" class="botao-comprar">Ver no Mercado Livre</a>
-                
+                    <a href="${linkRealCompleto}" target="_blank" class="botao-comprar">Ver no Mercado Livre</a>
                 </div>
             </div>
         `;
     });
 }
+
         // Lógica dos botões de categorias
         function filtrar(categoria) {
             // Altera o botão ativo visualmente
