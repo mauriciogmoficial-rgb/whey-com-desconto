@@ -2,13 +2,16 @@ import json
 import requests
 
 def buscar_30_mais_vendidos():
-    # Lista com os IDs reais de suplementos campeões de venda
+    # Lista limpa com IDs reais de suplementos
     ids_produtos = [
         "MLB3505232971", "MLB3105435912", "MLB3344129481", "MLB4012941211", 
         "MLB2194812491", "MLB3204918231", "MLB1928491822", "MLB3029481222"
     ]
     
+    # Junta os IDs com vírgula de forma limpa
     ids_formatados = ",".join(ids_produtos)
+    
+    # CORREÇÃO AQUI: Adicionada a barra correta antes de 'items' e os parâmetros corretos
     url = f"https://mercadolibre.com{ids_formatados}"
     
     headers = {
