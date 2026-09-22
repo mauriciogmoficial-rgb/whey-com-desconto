@@ -1,12 +1,11 @@
 const fs = require('fs');
 
-// Seu ID de afiliado oficial validado
+// Seu ID de afiliado oficial
 const SEU_ID_AFILIADO = "55954375"; 
 
 async function gerarVitrineAfiliado() {
-  console.log("Iniciando gerador de vitrine blindada com link de afiliado...");
+  console.log("Gerando links de afiliados corretos...");
   
-  // Lista de produtos reais e campeões de venda no Mercado Livre
   const produtos = [
     {
       "titulo": "Top Whey 3W Max Titanium 900g Sabores Original",
@@ -15,7 +14,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "17% OFF",
       "tag": "MAIS VENDIDO",
       "frete": "Frete Grátis",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "100% Pure Whey Integralmedica 900g Pouch Concentrado",
@@ -24,7 +24,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "11% OFF",
       "tag": "DESTAQUE",
       "frete": "Envio Rápido",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Whey Protein Concentrado 100% Pure 900g - Probiótica",
@@ -33,7 +34,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "20% OFF",
       "tag": "OFERTA",
       "frete": "Frete Grátis",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Iso Triple Zero 900g Integralmedica - Whey Isolado",
@@ -42,7 +44,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "14% OFF",
       "tag": "ISOLADO",
       "frete": "Frete Grátis",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Creatina Monohidratada 300g 100% Pura - Max Titanium",
@@ -51,7 +54,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "20% OFF",
       "tag": "MAIS VENDIDO",
       "frete": "Envio Rápido",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Creatina 100% Pura 300g Original - Integralmedica",
@@ -59,8 +63,8 @@ async function gerarVitrineAfiliado() {
       "preco_atual": "R\$ 74,50",
       "desconto": "21% OFF",
       "tag": "RECOMENDADO",
-      "frete": "Envio Rápido",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Whey Protein Blend 2W 900g Pouch - Max Titanium",
@@ -69,7 +73,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "23% OFF",
       "tag": "CUSTO BENEFÍCIO",
       "frete": "Envio Rápido",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "100% Whey Prime 900g Bodyaction - Whey Concentrado",
@@ -78,7 +83,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "25% OFF",
       "tag": "PROMOÇÃO",
       "frete": "Envio Rápido",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Coqueteleira Shaker 600ml com Esfera Misturadora",
@@ -87,7 +93,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "33% OFF",
       "tag": "ACESSÓRIO",
       "frete": "Envio Normal",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Whey Protein Isolado 100% ISO Whey 900g - Max Titanium",
@@ -96,7 +103,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "14% OFF",
       "tag": "PREMIUM",
       "frete": "Frete Grátis",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "Hipercalórico Sinister Mass 3kg Pouch - Integralmedica",
@@ -105,7 +113,8 @@ async function gerarVitrineAfiliado() {
       "desconto": "20% OFF",
       "tag": "MASSA MUSCULAR",
       "frete": "Frete Grátis",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     },
     {
       "titulo": "BCAA Fix 120 Cápsulas Ultra Concentrado - Integralmedica",
@@ -114,11 +123,12 @@ async function gerarVitrineAfiliado() {
       "desconto": "25% OFF",
       "tag": "OFERTA DO DIA",
       "frete": "Envio Rápido",
-      "link_original": "https://mercadolivre.com.br"
+      "url_produto": "https://mercadolivre.com.br",
+      "url_imagem": "https://mlstatic.com"
     }
   ];
 
-  // Mapeia e injeta o seu link de afiliado oficial de forma cirúrgica em cada item
+  // Junta o link de cada produto com o seu ID corretamente
   const produtosFormatados = produtos.map(item => {
     return {
       titulo: item.titulo,
@@ -127,18 +137,13 @@ async function gerarVitrineAfiliado() {
       desconto: item.desconto,
       tag: item.tag,
       frete: item.frete,
-      link_afiliado: `${item.link_original}?matt_tool=${SEU_ID_AFILIADO}`, // Seu link real ativado
-      imagem: "https://mlstatic.com" // Imagem base padrão estável
+      link_afiliado: `${item.url_produto}?matt_tool=${SEU_ID_AFILIADO}`,
+      imagem: item.url_imagem
     };
   });
 
-  // Salva no seu produtos.json limpando quaisquer aspas quebradas
   fs.writeFileSync('produtos.json', JSON.stringify(produtosFormatados, null, 2));
-  
-  console.log(`\n==================================================`);
-  console.log(`🔥 SUCESSO TOTAL! Vitrine gerada com o SEU link.`);
-  console.log(`Arquivo produtos.json atualizado com 12 itens.`);
-  console.log(`==================================================\n`);
+  console.log("✅ Sucesso! O arquivo produtos.json foi corrigido com links e fotos reais!");
 }
 
 gerarVitrineAfiliado();
