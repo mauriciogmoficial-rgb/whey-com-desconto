@@ -6,7 +6,7 @@
     <title>Whey com Desconto - Os Melhores Achadinhos de Suplementos</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background-color: #f5f5f5; color: #333; padding-bottom: 80px; }
+        body { background-color: #f5f5f5; color: #333; padding-bottom: 40px; }
         a { text-decoration: none; }
         .header-ml { background-color: #FFF159; padding: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .header-container { max-width: 1150px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
@@ -32,6 +32,12 @@
         .frete { color: #00a650; font-size: 12px; font-weight: bold; margin-top: 6px; }
         .btn-link { display: block; background-color: #00a650; color: white; text-align: center; padding: 10px; border-radius: 4px; font-size: 14px; font-weight: bold; margin-top: 15px; }
         .whats-flutuante { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: white; padding: 12px 22px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); z-index: 1000; }
+        
+        /* ADIÇÃO: ESTILOS DO RODAPÉ */
+        .footer { background-color: white; border-top: 1px solid #e5e5e5; margin-top: 60px; padding: 35px 20px; text-align: center; font-size: 12px; color: #666; line-height: 1.6; }
+        .footer-container { max-width: 1150px; margin: 0 auto; }
+        .footer p { margin-bottom: 6px; }
+
         @media (max-width: 900px) {
             .vitrine { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; }
             .img-container { height: 130px; margin-top: 20px; }
@@ -66,11 +72,19 @@
 
     <a href="#" id="link-whats" target="_blank" class="whats-flutuante">💬 Grupo de Ofertas</a>
 
+    <!-- ADIÇÃO: SEÇÃO DO RODAPÉ DE COPYRIGHT E AVISO LEGAL -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p><strong>Whey com Desconto</strong> é um site independente de divulgação e curadoria de achadinhos de suplementação.</p>
+            <p>Ao clicar nos botões "Ver no Mercado Livre", você será redirecionado para a plataforma oficial do anunciante. Como afiliados, recebemos uma comissão por compras qualificadas.</p>
+            <p style="margin-top: 15px; color: #aaa;">&copy; 2026 Whey com Desconto. Todos os direitos reservados. Hospedado com segurança via GitHub Pages.</p>
+        </div>
+    </footer>
+
     <script>
         var listaCompleta = [];
         var filtroAtual = "todos";
 
-        // Busca o arquivo JSON local
         fetch('produtos.json')
             .then(response => response.json())
             .then(data => {
