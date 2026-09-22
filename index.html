@@ -217,7 +217,7 @@ function renderizar(lista) {
     lista.forEach(produto => {
         // O próprio navegador monta o link do produto e da foto usando o ID
         const linkRealCompleto = 'https://mercadolivre.com.br/p/' + produto.id_produto + '?pAffiliateId=55954375';
-        const imagemRealCompleta = 'https://mlstatic.com_' + produto.id_imagem + '-O.jpg';
+        const imagemRealCompleta = 'https://mlstatic.com_' + produto.id_imagem + '-F.jpg';
 
         container.innerHTML += `
             <div class="card-produto">
@@ -251,7 +251,7 @@ function renderizar(lista) {
                 renderizar(todosProdutos);
             } else {
                 // Filtra buscando palavras-chave no título do produto
-                const filtrados = todosProdutos.filter(p => p.titulo.toLowerCase().includes(categoria.toLowerCase().split(' ')[0]));
+                const filtrados = todosProdutos.filter(p => p.tag.toLowerCase().includes(categoria.toLowerCase().split(' ')[0]));
                 renderizar(filtrados);
             }
         }
