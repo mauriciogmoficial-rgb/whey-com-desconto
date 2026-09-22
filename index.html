@@ -3,131 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whey com Desconto - Os Melhores Achadinhos de Suplementos</title>
+    <title>Whey com Desconto | Achadinhos de Suplementos</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background-color: #f5f5f5; color: #333; padding-bottom: 40px; }
-        a { text-decoration: none; }
-        .header-ml { background-color: #FFF159; padding: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .header-container { max-width: 1150px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-        .logo { font-weight: bold; font-size: 21px; color: #2d3748; }
-        .logo span { color: #3483fa; }
-        .banner { max-width: 1150px; margin: 20px auto; padding: 0 20px; }
-        .banner-content { background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); color: white; padding: 25px; border-radius: 6px; }
-        .banner h1 { font-size: 26px; margin-bottom: 6px; }
-        .categorias-container { max-width: 1150px; margin: 15px auto; padding: 0 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn-cat { background-color: white; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; color: #555; cursor: pointer; }
-        .btn-cat.ativo { background-color: #3483fa; color: white; border-color: #3483fa; }
-        .vitrine { max-width: 1150px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .card { background-color: white; border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-        .badge-tag { position: absolute; top: 0; left: 0; background-color: #00a650; color: white; font-size: 10px; font-weight: bold; padding: 4px 8px; border-bottom-right-radius: 6px; z-index: 10; }
-        .img-container { height: 180px; display: flex; align-items: center; justify-content: center; padding: 20px; margin-top: 15px; }
-        .img-container img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        .info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; border-top: 1px solid #f2f2f2; }
-        .titulo { font-size: 14px; color: #333; line-height: 1.35; height: 38px; overflow: hidden; margin-bottom: 8px; }
-        .preco-antigo { font-size: 12px; color: #999; text-decoration: line-through; margin-bottom: 2px; min-height: 15px; }
-        .preco-linha { display: flex; align-items: baseline; gap: 8px; }
-        .preco-atual { font-size: 22px; color: #333; font-weight: bold; }
-        .tag-off { color: #00a650; font-size: 13px; font-weight: bold; }
-        .frete { color: #00a650; font-size: 12px; font-weight: bold; margin-top: 6px; }
-        .btn-link { display: block; background-color: #00a650; color: white; text-align: center; padding: 10px; border-radius: 4px; font-size: 14px; font-weight: bold; margin-top: 15px; }
-        .whats-flutuante { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: white; padding: 12px 22px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); z-index: 1000; }
-        
-        /* ADIÇÃO: ESTILOS DO RODAPÉ */
-        .footer { background-color: white; border-top: 1px solid #e5e5e5; margin-top: 60px; padding: 35px 20px; text-align: center; font-size: 12px; color: #666; line-height: 1.6; }
-        .footer-container { max-width: 1150px; margin: 0 auto; }
-        .footer p { margin-bottom: 6px; }
-
-        @media (max-width: 900px) {
-            .vitrine { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; }
-            .img-container { height: 130px; margin-top: 20px; }
-            .preco-atual { font-size: 18px; }
+        /* Estilização Completa do Layout */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #fffb00;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #111;
+        }
+        .logo span { color: #007bff; }
+        .selo-ml {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .banner {
+            background-color: #0b1426;
+            color: white;
+            padding: 40px 5%;
+            margin: 20px 5%;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .banner h1 { margin: 0 0 10px 0; font-size: 28px; }
+        .banner p { margin: 0; color: #ccc; }
+        .filtros {
+            margin: 20px 5%;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filtros button {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .filtros button.ativo, .filtros button:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px 5%;
+        }
+        .card-produto {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        .card-produto:hover { transform: translateY(-5px); }
+        .tag-status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: #ff3b30;
+            color: white;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .imagem-container {
+            text-align: center;
+            margin: 20px 0;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .imagem-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        .conteudo-produto h3 {
+            font-size: 15px;
+            margin: 0 0 10px 0;
+            height: 40px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .preco-antigo {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 13px;
+            margin: 0;
+        }
+        .preco-atual-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+        }
+        .preco-atual {
+            font-size: 22px;
+            font-weight: bold;
+            color: #111;
+        }
+        .porcentagem-desconto {
+            color: #2ed573;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .tipo-frete {
+            color: #2ed573;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 5px 0 15px 0;
+        }
+        .botao-comprar {
+            background-color: #2ed573;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            transition: background 0.2s;
+        }
+        .botao-comprar:hover { background-color: #26af5f; }
+        footer {
+            background-color: #fff;
+            text-align: center;
+            padding: 30px 5%;
+            font-size: 13px;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
 
-    <header class="header-ml">
-        <div class="header-container">
-            <a href="#" class="logo">💪 Whey com <span>Desconto</span></a>
-            <div style="font-size: 12px; color: #666; font-weight: bold;">🛡️ Links Verificados Mercado Livre</div>
-        </div>
+    <header>
+        <div class="logo">💪 Whey com <span>Desconto</span></div>
+        <div class="selo-ml">🛡️ Links Verificados Mercado Livre</div>
     </header>
 
-    <section class="banner">
-        <div class="banner-content">
-            <h1>Achadinhos de Suplementos com até 40% OFF</h1>
-            <p>Os melhores preços atualizados direto do Mercado Livre.</p>
-        </div>
-    </section>
+    <div class="banner">
+        <h1>Achadinhos de Suplementos com até 40% OFF</h1>
+        <p>Os melhores preços atualizados direto do Mercado Livre.</p>
+    </div>
 
-    <section class="categorias-container">
-        <button class="btn-cat ativo" onclick="filtrar('todos', this)">🛒 Todos</button>
-        <button class="btn-cat" onclick="filtrar('whey', this)">🥤 Whey Protein</button>
-        <button class="btn-cat" onclick="filtrar('creatina', this)">⚡ Creatina</button>
-        <button class="btn-cat" onclick="filtrar('acessorios', this)">🎒 Acessórios</button>
-    </section>
+    <div class="filtros">
+        <button class="ativo" onclick="filtrar('Todos')">🛒 Todos</button>
+        <button onclick="filtrar('Whey Protein')">🥤 Whey Protein</button>
+        <button onclick="filtrar('Creatina')">⚡ Creatina</button>
+        <button onclick="filtrar('Acessórios')">🎒 Acessórios</button>
+    </div>
 
-    <main class="vitrine" id="box-produtos"></main>
+    <!-- Container onde a mágica acontece -->
+    <div id="container-produtos" class="grid-produtos"></div>
 
-    <a href="#" id="link-whats" target="_blank" class="whats-flutuante">💬 Grupo de Ofertas</a>
-
-    <!-- ADIÇÃO: SEÇÃO DO RODAPÉ DE COPYRIGHT E AVISO LEGAL -->
-    <footer class="footer">
-        <div class="footer-container">
-            <p><strong>Whey com Desconto</strong> é um site independente de divulgação e curadoria de achadinhos de suplementação.</p>
-            <p>Ao clicar nos botões "Ver no Mercado Livre", você será redirecionado para a plataforma oficial do anunciante. Como afiliados, recebemos uma comissão por compras qualificadas.</p>
-            <p style="margin-top: 15px; color: #aaa;">&copy; 2026 Whey com Desconto. Todos os direitos reservados. Hospedado com segurança via GitHub Pages.</p>
-        </div>
+    <footer>
+        <p>Whey com Desconto é um site independente de divulgação e curadoria de achadinhos de suplementação.</p>
+        <p>Ao clicar nos botões "Ver no Mercado Livre", você será redirecionado para a plataforma oficial do anunciante. Como afiliados, recebemos uma comissão por compras qualificadas.</p>
+        <p>© 2026 Whey com Desconto. Todos os direitos reservados. Hospedado com segurança via GitHub Pages.</p>
     </footer>
 
     <script>
-        var listaCompleta = [];
-        var filtroAtual = "todos";
+        let todosProdutos = [];
 
-        fetch('produtos.json')
-            .then(response => response.json())
-            .then(data => {
-                listaCompleta = data.produtos;
-                if(data.config && data.config.linkWhatsapp) {
-                    document.getElementById('link-whats').href = data.config.linkWhatsapp;
-                }
-                construirVitrine();
-            });
+        // Função que lê o produtos.json gerado pelo seu robô
+        async function carregarProdutos() {
+            try {
+                const resposta = await fetch('produtos.json');
+                todosProdutos = await resposta.json();
+                renderizar(todosProdutos);
+            } catch (erro) {
+                console.error("Erro ao ler o arquivo JSON:", erro);
+                document.getElementById('container-produtos').innerHTML = "<p>Erro ao carregar os produtos. Tente recarregar a página.</p>";
+            }
+        }
 
-        function construirVitrine() {
-            var box = document.getElementById('box-produtos');
-            box.innerHTML = "";
-            
-            listaCompleta.forEach(function(p) {
-                if (filtroAtual !== "todos" && p.categoria !== filtroAtual) return;
-                
-                var c = document.createElement('div');
-                c.className = "card";
-                
-                var tagHTML = p.tag ? '<span class="badge-tag">' + p.tag + '</span>' : '';
-                var antigoHTML = p.precoAntigo ? '<div class="preco-antigo">' + p.precoAntigo + '</div>' : '<div class="preco-antigo"></div>';
-                var offHTML = p.desconto ? '<span class="tag-off">' + p.desconto + '</span>' : '';
-                
-                c.innerHTML = tagHTML + 
-                    '<div class="img-container"><img src="' + p.foto + '"></div>' +
-                    '<div class="info">' +
-                        '<h3 class="titulo">' + p.titulo + '</h3>' +
-                        antigoHTML +
-                        '<div class="preco-linha"><span class="preco-atual">' + p.precoAtual + '</span>' + offHTML + '</div>' +
-                        '<div class="frete">' + p.frete + '</div>' +
-                        '<a href="' + p.link + '" target="_blank" rel="nofollow" class="btn-link">Ver no Mercado Livre</a>' +
-                    '</div>';
-                box.appendChild(c);
+        // Desenha os cards na tela usando o design exato do seu site
+        function renderizar(lista) {
+            const container = document.getElementById('container-produtos');
+            container.innerHTML = '';
+
+            lista.forEach(produto => {
+                container.innerHTML += `
+                    <div class="card-produto">
+                        <span class="tag-status">${produto.tag}</span>
+                        <div class="imagem-container">
+                            <img src="${produto.imagem}" alt="${produto.titulo}">
+                        </div>
+                        <div class="conteudo-produto">
+                            <h3>${produto.titulo}</h3>
+                            <p class="preco-antigo">${produto.preco_antigo || ''}</p>
+                            <div class="preco-atual-container">
+                                <span class="preco-atual">${produto.preco_atual}</span>
+                                <span class="porcentagem-desconto">${produto.desconto || ''}</span>
+                            </div>
+                            <p class="tipo-frete">🚚 ${produto.frete}</p>
+                            <a href="${produto.link_afiliado}" target="_blank" class="botao-comprar">Ver no Mercado Livre</a>
+                        </div>
+                    </div>
+                `;
             });
         }
 
-        function filtrar(categoria, btn) {
-            filtroAtual = categoria;
-            document.querySelectorAll('.btn-cat').forEach(b => b.classList.remove('ativo'));
-            btn.classList.add('ativo');
-            construirVitrine();
+        // Lógica dos botões de categorias
+        function filtrar(categoria) {
+            // Altera o botão ativo visualmente
+            const botoes = document.querySelectorAll('.filtros button');
+            botoes.forEach(btn => btn.classList.remove('ativo'));
+            event.target.classList.add('ativo');
+
+            if (categoria === 'Todos') {
+                renderizar(todosProdutos);
+            } else {
+                // Filtra buscando palavras-chave no título do produto
+                const filtrados = todosProdutos.filter(p => p.titulo.toLowerCase().includes(categoria.toLowerCase().split(' ')[0]));
+                renderizar(filtrados);
+            }
         }
+
+        // Inicia o processo assim que a página abre
+        window.onload = carregarProdutos;
     </script>
 </body>
 </html>
