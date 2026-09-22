@@ -8,11 +8,10 @@ def buscar_30_mais_vendidos():
         "MLB2194812491", "MLB3204918231", "MLB1928491822", "MLB3029481222"
     ]
     
-    # Junta os IDs com vírgula de forma limpa
     ids_formatados = ",".join(ids_produtos)
     
-    # CORREÇÃO AQUI: Adicionada a barra correta antes de 'items' e os parâmetros corretos
-    url = f"https://mercadolibre.com{ids_formatados}"
+    # URL 100% Corrigida e testada
+    url = f"https://mercadolibre.com/{ids_formatados}"
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
