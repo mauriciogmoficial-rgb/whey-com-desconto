@@ -2,17 +2,21 @@ import json
 import requests
 
 def buscar_30_mais_vendidos():
-    # Lista limpa com IDs reais de suplementos
+    # Lista limpa com IDs reais de suplementos para a vitrine
     ids_produtos = [
         "MLB3505232971", "MLB3105435912", "MLB3344129481", "MLB4012941211", 
         "MLB2194812491", "MLB3204918231", "MLB1928491822", "MLB3029481222"
     ]
     
-    # Junta os IDs com vírgula de forma limpa
     ids_formatados = ",".join(ids_produtos)
     
-    # CORREÇÃO AQUI: Adicionada a barra correta antes de 'items' e os parâmetros corretos
-    url = f"https://mercadolibre.com{ids_formatados}"
+    # Endereço estruturado e imutável da API do Mercado Livre
+    dominio_api = "https://mercadolibre.com"
+    recurso_itens = "/items"
+    parametros_busca = f"?ids={ids_formatados}"
+    
+    # Montagem técnica da URL por concatenação direta, livre de erros de interpolação
+    url = dominio_api + recurso_itens + parametros_busca
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
