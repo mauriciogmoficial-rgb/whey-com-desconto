@@ -1,0 +1,32 @@
+name: Atualizar Anuncios Automaticamente
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Roda automaticamente todo dia à meia-noite
+  workflow_dispatch: # Permite que você clique em um botão para atualizar quando quiser
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Baixar código do repositório
+      uses: actions/checkout@v3
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-node-version: 18
+
+    - name: Instalar Puppeteer (Navegador do Robô)
+      run: npm install puppeteer
+
+    - name: Executar o Robô de Busca Real
+      run: node atualizar_produtos.js
+
+    - name: Salvar alterações no seu GitHub Pages
+      run: |
+        git config --global user.name "Robo de Ofertas"
+        git config --global user.email "bot@wheycomdesconto.com.br"
+        git add produtos.json
+        git commit -m "Preços e anúncios atualizados automaticamente" || exit 0
+        git push
