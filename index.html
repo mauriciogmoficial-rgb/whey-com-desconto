@@ -216,7 +216,7 @@ function renderizar(lista) {
 
     lista.forEach(produto => {
         // O próprio navegador monta o link do produto e da foto usando o ID
-        const linkRealCompleto = 'https://' + 'www.' + 'mercadolivre.' + 'com.' + 'br/p/' + produto.id_produto + '?matt_tool=55954375';
+        const linkRealCompleto = 'https://' + 'www.' + 'mercadolivre.' + 'com.' + 'br/produto/' + produto.id_produto + '?matt_tool=55954375';
         const imagemRealCompleta = 'https://mlstatic.com_' + produto.id_imagem + '-O.jpg';
 
         container.innerHTML += `
