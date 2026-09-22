@@ -216,13 +216,13 @@ function renderizar(lista) {
 
     lista.forEach(produto => {
         // Monta o link do produto adicionando o subdomínio correto, o prefixo MLB- e o sufixo _JM
-        const linkRealCompleto = 'https://mercadolivre.com.br' + produto.id_produto + '_JM?pAffiliateId=55954375';
+        //const linkRealCompleto = 'https://mercadolivre.com.br' + produto.id_produto + '_JM?pAffiliateId=55954375';
 
         // Monta o link da imagem usando o servidor de entrega padrão do Mercado Livre (://mlstatic.com)
         const imagemRealCompleta = 'https://://mlstatic.com/D_NQ_NP_' + produto.id_imagem + '-F.jpg';
 
         // O próprio navegador monta o link do produto e da foto usando o ID
-        //const linkRealCompleto = 'https://mercadolivre.com.br/p/' + produto.id_produto + '?pAffiliateId=55954375';
+        const linkRealCompleto = 'https://mercadolivre.com.br/p/MLB' + produto.id_produto + '?pAffiliateId=55954375';
         //const imagemRealCompleta = 'https://mlstatic.com_' + produto.id_imagem + '-F.jpg';
 
         container.innerHTML += `
