@@ -200,7 +200,8 @@
         // Função que lê o produtos.json gerado pelo seu robô
         async function carregarProdutos() {
             try {
-                const resposta = await fetch('produtos.json');
+                 // O código gera um número aleatório no final para forçar o navegador a ler o arquivo novo todo segundo
+                const resposta = await fetch('produtos.json?v=' + Date.now());
                 todosProdutos = await resposta.json();
                 renderizar(todosProdutos);
             } catch (erro) {
