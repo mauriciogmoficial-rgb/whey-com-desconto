@@ -1,0 +1,139 @@
+{
+  "config": {
+    "linkWhatsapp": "COLE_AQUI_O_LINK_DO_SEU_GRUPO_DO_WHATSAPP"
+  },
+  "produtos": [
+    {
+      "categoria": "whey",
+      "tag": "30% OFF",
+      "titulo": "100% Pure Whey 900g Pouch - Integralmedica",
+      "precoAntigo": "R$ 139,90",
+      "precoAtual": "R$ 97,50",
+      "desconto": "30% OFF",
+      "frete": "🚚 Frete Grátis",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "creatina",
+      "tag": "MAIS VENDIDO",
+      "titulo": "Creatina Monohidratada 300g - Max Titanium 100% Pura",
+      "precoAntigo": "R$ 89,90",
+      "precoAtual": "R$ 71,90",
+      "desconto": "20% OFF",
+      "frete": "⚡ Envio Rápido Full",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "whey",
+      "tag": "MELHOR PREÇO",
+      "titulo": "100% Whey Concentrado 900g - Max Titanium",
+      "precoAntigo": "R$ 129,90",
+      "precoAtual": "R$ 91,00",
+      "desconto": "29% OFF",
+      "frete": "🚚 Frete Grátis",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "creatina",
+      "tag": "OFERTA DO DIA",
+      "titulo": "Creatina Creapure 250g - Growth Supplements",
+      "precoAntigo": "R$ 139,90",
+      "precoAtual": "R$ 124,90",
+      "desconto": "10% OFF",
+      "frete": "🚚 Frete Grátis",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "whey",
+      "tag": "TOP 1",
+      "titulo": "Whey Protein Concentrado 1kg Sabor Chocolate - Growth",
+      "precoAntigo": "R$ 299,90",
+      "precoAtual": "R$ 219,90",
+      "desconto": "26% OFF",
+      "frete": "🚚 Frete Grátis",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "creatina",
+      "tag": "DUX PURA",
+      "titulo": "Creatina Monohidratada Pura Sabor Neutro 300g - Dux",
+      "precoAntigo": "R$ 49,90",
+      "precoAtual": "R$ 38,03",
+      "desconto": "23% OFF",
+      "frete": "⚡ Envio Rápido Full",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "acessorios",
+      "tag": "RECOMENDADO",
+      "titulo": "Coqueteleira Shaker Blister 700ml com Misturador",
+      "precoAntigo": "R$ 34,90",
+      "precoAtual": "R$ 24,90",
+      "desconto": "28% OFF",
+      "frete": "⭐ Campeão de Vendas",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "whey",
+      "tag": "ISOLADO",
+      "titulo": "Iso Triple Zero 900g Whey Isolado - Integralmedica",
+      "precoAntigo": "R$ 210,00",
+      "precoAtual": "R$ 159,90",
+      "desconto": "23% OFF",
+      "frete": "🚚 Frete Grátis",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "creatina",
+      "tag": "100% PURA",
+      "titulo": "Creatina Creapure 300g Premium - Integralmedica",
+      "precoAntigo": "R$ 149,90",
+      "precoAtual": "R$ 112,00",
+      "desconto": "25% OFF",
+      "frete": "⚡ Envio Rápido Full",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "whey",
+      "tag": "OFERTA IMPERDÍVEL",
+      "titulo": "Isolate Protein Mix 900g Refil - New Millen",
+      "precoAntigo": "R$ 109,90",
+      "precoAtual": "R$ 79,90",
+      "desconto": "27% OFF",
+      "frete": "🚚 Frete Grátis",
+      "foto": "https://placeholder.com0",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "acessorios",
+      "tag": "50% OFF",
+      "titulo": "Par de Straps Profissionais em Algodão para Treino Cross",
+      "precoAntigo": "R$ 39,80",
+      "precoAtual": "R$ 19,90",
+      "desconto": "50% OFF",
+      "frete": "Aproveite frete conjunto",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    },
+    {
+      "categoria": "creatina",
+      "tag": "PROMOÇÃO",
+      "titulo": "Creatina Black Skull 300g Monohidratada 100% Pura",
+      "precoAntigo": "R$ 89,90",
+      "precoAtual": "R$ 69,90",
+      "desconto": "22% OFF",
+      "frete": "⚡ Envio Rápido Full",
+      "foto": "https://placeholder.com",
+      "link": "SEU_LINK_DE_AFILIADO_AQUI"
+    }
+  ]
+}
