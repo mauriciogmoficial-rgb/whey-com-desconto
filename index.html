@@ -5,34 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whey com Desconto - Os Melhores Achadinhos de Suplementos</title>
     <style>
-        /* DESIGN NATIVO ESTILO MERCADO LIVRE */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
         body { background-color: #f5f5f5; color: #333; padding-bottom: 40px; -webkit-font-smoothing: antialiased; }
         a { text-decoration: none; }
-        
         .header-ml { background-color: #FFF159; padding: 12px 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .header-container { max-width: 1150px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .logo { font-weight: bold; font-size: 21px; color: #2d3748; display: flex; align-items: center; gap: 8px; }
+        .logo { font-weight: bold; font-size: 21px; color: #2d3748; }
         .logo span { color: #3483fa; }
-        .busca-box { flex: 1; max-width: 550px; min-width: 280px; position: relative; }
+        .busca-box { flex: 1; max-width: 550px; min-width: 280px; }
         .busca-input { width: 100%; padding: 9px 15px; border: none; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.15); font-size: 14px; outline: none; }
         .aviso-topo { font-size: 12px; color: #666; font-weight: 600; }
-        
         .banner { max-width: 1150px; margin: 20px auto; padding: 0 20px; }
         .banner-content { background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); color: white; padding: 25px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
         .banner-tag { background-color: #ef4444; font-size: 11px; font-weight: bold; padding: 3px 7px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
         .banner h1 { font-size: 26px; margin-bottom: 6px; font-weight: 700; }
         .banner p { font-size: 14px; color: #94a3b8; }
-        
-        .vitrine { max-width: 1150px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .categorias-container { max-width: 1150px; margin: 15px auto; padding: 0 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-cat { background-color: white; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; transition: all 0.2s; }
+        .btn-cat.ativo { background-color: #3483fa; color: white; border-color: #3483fa; }
+        .vitrine { max-width: 1150px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; min-height: 200px; }
         .card { background-color: white; border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
         .card-tag { position: absolute; top: 0; left: 0; background-color: #00a650; color: white; font-size: 10px; font-weight: bold; padding: 4px 8px; border-bottom-right-radius: 6px; z-index: 10; }
-        .card-tag-red { position: absolute; top: 0; left: 0; background-color: #ef4444; color: white; font-size: 10px; font-weight: bold; padding: 4px 8px; border-bottom-right-radius: 6px; z-index: 10; }
-        
         .img-container { height: 190px; display: flex; align-items: center; justify-content: center; padding: 20px; background: white; margin-top: 10px; }
         .img-container img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        
         .info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; border-top: 1px solid #f2f2f2; }
         .titulo { font-size: 14px; color: #333; line-height: 1.35; height: 38px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 12px; font-weight: 400; }
         .preco-antigo { font-size: 12px; color: #999; text-decoration: line-through; margin-bottom: 2px; min-height: 14px; }
@@ -40,11 +36,10 @@
         .preco-atual { font-size: 22px; color: #333; font-weight: 400; }
         .desconto { color: #00a650; font-size: 13px; font-weight: 600; }
         .frete { color: #00a650; font-size: 12px; font-weight: 600; margin-top: 6px; }
-        
-        .btn-link { display: block; background-color: #00a650; color: white; text-align: center; padding: 10px; border-radius: 4px; font-size: 14px; font-weight: bold; margin-top: 15px; transition: background 0.2s; }
+        .btn-link { display: block; background-color: #00a650; color: white; text-align: center; padding: 10px; border-radius: 4px; font-size: 14px; font-weight: bold; margin-top: 15px; }
         .btn-link:hover { background-color: #008741; }
-        .footer { background-color: white; border-top: 1px solid #e5e5e5; margin-top: 60px; padding: 35px 20px; text-align: center; font-size: 12px; color: #666; line-height: 1.6; }
-        
+        .btn-whats { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 12px 20px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; }
+        .footer { background-color: white; border-top: 1px solid #e5e5e5; margin-top: 60px; padding: 35px 20px; text-align: center; font-size: 12px; color: #666; }
         @media (max-width: 900px) {
             .vitrine { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; }
             .header-container { justify-content: center; gap: 10px; }
@@ -64,7 +59,7 @@
         <div class="header-container">
             <a href="#" class="logo">💪 Whey com <span>Desconto</span></a>
             <div class="busca-box">
-                <input type="text" placeholder="Buscar marcas, whey, creatina..." class="busca-input">
+                <input type="text" placeholder="Buscar suplementos, marcas..." class="busca-input" id="inputBusca">
             </div>
             <div class="aviso-topo">🛡️ Links Verificados Mercado Livre</div>
         </div>
@@ -79,85 +74,103 @@
         </div>
     </section>
 
-    <!-- VITRINE COM OS 4 CARDS CORRIGIDOS -->
-    <main class="vitrine">
+    <!-- BOTÕES DE FILTRO -->
+    <section class="categorias-container" id="containerAbas"></section>
 
-        <!-- PRODUTO 1 -->
-        <div class="card">
-            <span class="card-tag">MAIS VENDIDO</span>
-            <div class="img-container">
-                <img src="https://githubusercontent.com" alt="Whey Protein">
-            </div>
-            <div class="info">
-                <h3 class="titulo">100% Pure Whey 900g Pouch - Integralmédica</h3>
-                <div class="preco-antigo">R$ 139,90</div>
-                <div class="preco-container">
-                    <span class="preco-atual">R$ 97,50</span>
-                    <span class="desconto">30% OFF</span>
-                </div>
-                <div class="frete">🚚 Frete Grátis</div>
-                <a href="#" target="_blank" rel="nofollow" class="btn-link">Ver no Mercado Livre</a>
-            </div>
-        </div>
+    <!-- CONTAINER DA VITRINE (GERADO AUTOMATICAMENTE) -->
+    <main class="vitrine" id="vitrineProdutos"></main>
 
-        <!-- PRODUTO 2 -->
-        <div class="card">
-            <div class="img-container">
-                <img src="https://githubusercontent.com" alt="Creatina">
-            </div>
-            <div class="info">
-                <h3 class="titulo">Creatina Monohidratada 300g - Max Titanium 100% Pura</h3>
-                <div class="preco-antigo">R$ 89,90</div>
-                <div class="preco-container">
-                    <span class="preco-atual">R$ 71,90</span>
-                    <span class="desconto">20% OFF</span>
-                </div>
-                <div class="frete">⚡ Envio Full Disponível</div>
-                <a href="#" target="_blank" rel="nofollow" class="btn-link">Ver no Mercado Livre</a>
-            </div>
-        </div>
-
-        <!-- PRODUTO 3 -->
-        <div class="card">
-            <span class="card-tag-red">OFERTA IMPERDÍVEL</span>
-            <div class="img-container">
-                <img src="https://githubusercontent.com" alt="Pré-Treino">
-            </div>
-            <div class="info">
-                <h3 class="titulo">Pré-Treino Égide 300g - Max Titanium Frutas Vermelhas</h3>
-                <div class="preco-antigo">R$ 119,90</div>
-                <div class="preco-container">
-                    <span class="preco-atual">R$ 89,90</span>
-                    <span class="desconto">25% OFF</span>
-                </div>
-                <div class="frete">🚚 Frete Grátis</div>
-                <a href="#" target="_blank" rel="nofollow" class="btn-link">Ver no Mercado Livre</a>
-            </div>
-        </div>
-
-        <!-- PRODUTO 4 -->
-        <div class="card">
-            <div class="img-container">
-                <img src="https://githubusercontent.com" alt="Coqueteleira">
-            </div>
-            <div class="info">
-                <h3 class="titulo">Coqueteleira Shaker Blister 700ml com Esfera Misturadora</h3>
-                <div class="preco-antigo"></div>
-                <div class="preco-container">
-                    <span class="preco-atual">R$ 24,90</span>
-                </div>
-                <div class="frete" style="color: #666;">⭐ Campeão de Vendas</div>
-                <a href="#" target="_blank" rel="nofollow" class="btn-link">Ver no Mercado Livre</a>
-            </div>
-        </div>
-
-    </main>
+    <!-- BOTÃO DO WHATSAPP -->
+    <a href="#" target="_blank" class="btn-whats">💬 Grupo de Ofertas</a>
 
     <!-- RODAPÉ -->
     <footer class="footer">
-        <p><strong>Whey com Desconto</strong> é um site independente de divulgação de achadinhos.</p>
-        <p>Como afiliados, recebemos uma comissão por compras qualificadas realizadas no Mercado Livre.</p>
+        <p><strong>Whey com Desconto</strong> é um site independente de divulgação de achadinhos de suplementos.</p>
+        <p>Como afiliados, recebemos comissão por compras qualificadas efetuadas no Mercado Livre.</p>
     </footer>
 
-</body>
-</html>
+    <!-- SCRIPT DE AUTOMAÇÃO SEGURO -->
+    <script>
+        // BANCO DE DADOS DOS PRODUTOS (Fácil de atualizar e imune a quebras do chat)
+        var BANCO_PRODUTOS = [
+            {
+                tag: "MAIS VENDIDO",
+                categoria: "whey",
+                titulo: "100% Pure Whey 900g Pouch - Integralmedica",
+                precoAntigo: "R$ 139,90",
+                precoAtual: "R$ 97,50",
+                desconto: "30% OFF",
+                frete: "🚚 Frete Grátis",
+                foto: "w1.jpg",
+                link: "#"
+            },
+            {
+                tag: "OFERTA",
+                categoria: "creatina",
+                titulo: "Creatina Monohidratada 300g - Max Titanium 100% Pura",
+                precoAntigo: "R$ 89,90",
+                precoAtual: "R$ 71,90",
+                desconto: "20% OFF",
+                frete: "⚡ Envio Full Disponível",
+                foto: "w2.jpg",
+                link: "#"
+            },
+            {
+                tag: "MELHOR PREÇO",
+                categoria: "whey",
+                titulo: "100% Whey Concentrado 900g - Max Titanium",
+                precoAntigo: "R$ 129,90",
+                precoAtual: "R$ 91,00",
+                desconto: "29% OFF",
+                frete: "🚚 Frete Grátis",
+                foto: "w3.jpg",
+                link: "#"
+            },
+            {
+                tag: "DESTAQUE",
+                categoria: "acessorios",
+                titulo: "Coqueteleira Shaker Blister 700ml com Esfera Misturadora",
+                precoAntigo: "",
+                precoAtual: "R$ 24,90",
+                desconto: "",
+                frete: "⭐ Campeão de Vendas",
+                foto: "w4.jpg",
+                link: "#"
+            }
+        ];
+
+        var categoriaAtiva = "todos";
+        var termoBusca = "";
+
+        // Função principal para desenhar a vitrine na tela
+        function renderizarVitrine() {
+            var container = document.getElementById("vitrineProdutos");
+            container.innerHTML = "";
+
+            var filtrados = BANCO_PRODUTOS.filter(function(p) {
+                var bateCat = (categoriaAtiva === "todos" || p.categoria === categoriaAtiva);
+                var bateBusca = p.titulo.toLowerCase().indexOf(termoBusca.toLowerCase()) !== -1;
+                return bateCat && bateBusca;
+            });
+
+            filtrados.forEach(function(p) {
+                var htmlCard = '<div class="card">';
+                if(p.tag) {
+                    htmlCard += '<span class="card-tag">' + p.tag + '</span>';
+                }
+                htmlCard += '<div class="img-container"><img src="' + p.foto + '" alt="Suplemento"></div>';
+                htmlCard += '<div class="info">';
+                htmlCard += '<h3 class="titulo">' + p.titulo + '</h3>';
+                htmlCard += '<div class="preco-antigo">' + p.precoAntigo + '</div>';
+                htmlCard += '<div class="preco-container"><span class="preco-atual">' + p.precoAtual + '</span>';
+                if(p.desconto) {
+                    htmlCard += '<span class="desconto">' + p.desconto + '</span>';
+                }
+                htmlCard += '</div><div class="frete">' + p.frete + '</div>';
+                htmlCard += '<a href="' + p.link + '" target="_blank" rel="nofollow" class="btn-link">Ver no Mercado Livre</a>';
+                htmlCard += '</div></div>';
+                
+                container.innerHTML += htmlCard;
+            });
+        }
+
