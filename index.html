@@ -240,7 +240,10 @@ function renderizar(lista) {
         const imagemRealCompleta = 'https://://mlstatic.com/D_NQ_NP_' + produto.id_imagem + '-F.jpg';
 
         // O próprio navegador monta o link do produto e da foto usando o ID
-const linkRealCompleto = produto.link_afiliado;
+        //const linkRealCompleto = produto.link_afiliado;
+// Remove o formato problemático /p/ e reconstrói a URL usando o padrão universal de anúncios do Mercado Livre
+const linkRealCompleto = produto.link_afiliado.replace('/p/MLB', '/jm/item?item_id=MLB');
+
 console.log("Link carregado do JSON:", linkRealCompleto);
 
         //const linkRealCompleto = 'https://mercadolivre.com.br/p/MLB' + produto.id_produto + '?pAffiliateId=55954375';
