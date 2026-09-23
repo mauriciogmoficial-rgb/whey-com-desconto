@@ -18,8 +18,9 @@ def raspar_mercado_livre_nuvem():
 
         page = context.new_page()
 
-        # URL de busca real que você abriria no seu navegador
-        url = "https://mercadolivre.com.br[A:whey%20protein]"
+        # === COMENTÁRIO: ENDEREÇO CORRETO E SEGURO DA BUSCA DO MERCADO LIVRE ===
+        # URL Alvo: https://mercadolivre.com.br
+        url = "https://mercadolivre.com.br"
         print(f"Acessando a página de busca: {url}")
 
         try:
