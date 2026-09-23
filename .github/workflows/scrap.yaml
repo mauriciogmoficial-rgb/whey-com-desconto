@@ -19,11 +19,14 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Executar Script Python Autenticado
-      # Passa as chaves do cofre para o ambiente de execução do script
-      env:
-        ML_CLIENT_ID: ${{ secrets.ML_CLIENT_ID }}
-        ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+    # === INSTALAÇÃO DO SIMULADOR DE TELA NA NUVEM ===
+    - name: Instalar Playwright e Dependências
+      run: |
+        python -m pip install --upgrade pip
+        pip install playwright
+        playwright install chromium --with-deps
+
+    - name: Executar Navegador Automatizado
       run: |
         python scraping/scrap.py
 
@@ -32,5 +35,5 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@://github.com"
         git add scraping/produtos.json
-        git commit -m "Automação: Atualiza lista de produtos.json via API Oficial" || echo "Sem alterações para salvar"
+        git commit -m "Automação: Atualiza lista via Simulador Visuall Playwright" || echo "Sem alterações para salvar"
         git push
