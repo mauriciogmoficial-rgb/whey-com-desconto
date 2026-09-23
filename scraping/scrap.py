@@ -10,8 +10,8 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
     GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
     SEARCH_ENGINE_ID = os.environ.get("SEARCH_ENGINE_ID")
 
-    # Filtro para trazer anúncios válidos de produtos do Mercado Livre
-    query_completa = f"site:://mercadolivre.com.br/p/ OR site:://mercadolivre.com.br {termo_busca}"
+    # Filtro estável para capturar anúncios do Mercado Livre
+    query_completa = f"site:://mercadolivre.com.br {termo_busca}"
     query_codificada = urllib.parse.quote(query_completa)
 
     url = f"https://googleapis.com{GOOGLE_API_KEY}&cx={SEARCH_ENGINE_ID}&num=20&q={query_codificada}"
@@ -24,11 +24,12 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             dados = json.loads(response.read().decode("utf-8"))
 
         items = dados.get("items", [])
+        print(f"Google retornou {len(items)} itens para {categoria_nome}")
 
         for item in items:
             pagemap = item.get("pagemap", {})
 
-            # 1. Extração do Preço Real (Tratamento correto de dicionários dentro de listas)
+            # 1. Extração segura do preço na lista do Google
             offers = pagemap.get("offer", [{}])
             preco_puro = ""
             if isinstance(offers, list) and len(offers) > 0:
@@ -41,10 +42,10 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             except ValueError:
                 preco_atual = 99.90
 
-            # 2. Cálculo do preço antigo simulado
+            # 2. Preço antigo simulado
             preco_antigo = round(preco_atual * 1.20, 2)
 
-            # 3. Extração da Imagem oficial (Tratamento correto de listas)
+            # 3. Extração da Imagem oficial em HD
             cse_image = pagemap.get("cse_image", [{}])
             imagem_url = ""
             if isinstance(cse_image, list) and len(cse_image) > 0:
@@ -53,22 +54,20 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
                 imagem_url = cse_image.get("src", "")
 
             if not imagem_url:
-                imagem_url = "https://mlstatic.com"  # Fallback
+                imagem_url = "https://mlstatic.com"
 
             if imagem_url.startswith("http://"):
                 imagem_url = imagem_url.replace("http://", "https://")
 
-            # 4. Injeção do link de afiliado
-            link_original = item.get("link", "https://mercadolivre.com.br")
+            # 4. Link de afiliado estruturado
+            link_original = item.get("link", "https://www.mercadolivre.com.br")
             link_afiliado = f"{link_original}?matt_tool=55954375"
 
-            # CORREÇÃO DE SINTAXE: Limpa o título sem quebrar a string
+            # 5. Tratamento limpo e seguro do título
             titulo_original = item.get("title", "Produto Suplemento")
-            titulo_limpo = (
-                titulo_original.replace(" | Mercado Livre", "")
-                .split(" - ")[0]
-                .strip()
-            )
+            titulo_limpo = titulo_original.replace(" | Mercado Livre", "").strip()
+            if " - " in titulo_limpo:
+                titulo_limpo = titulo_limpo.split(" - ")[0].strip()
 
             lista_produtos.append({
                 "categoria": categoria_nome,
@@ -83,7 +82,7 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             })
 
     except Exception as e:
-        print(f"Aviso na busca da categoria {categoria_nome}: {e}")
+        print(f"Erro na execução da categoria {categoria_nome}: {e}")
 
     return lista_produtos
 
@@ -100,14 +99,10 @@ def define_tag_visual(lista):
 
 def main():
     dados_finais = {
-        "whey_protein": buscar_categoria_no_google(
-            "whey protein concentrado isolado", "Whey Protein"
-        ),
-        "creatina": buscar_categoria_no_google(
-            "creatina monohidratada pura", "Creatina"
-        ),
+        "whey_protein": buscar_categoria_no_google("whey protein", "Whey Protein"),
+        "creatina": buscar_categoria_no_google("creatina monohidratada", "Creatina"),
         "acessorios": buscar_categoria_no_google(
-            "coqueteleira academia shaker blender", "Acessórios"
+            "coqueteleira academia shaker", "Acessórios"
         ),
     }
 
@@ -115,9 +110,7 @@ def main():
     with open("scraping/produtos.json", "w", encoding="utf-8") as f:
         json.dump(dados_finais, f, ensure_ascii=False, indent=4)
 
-    print(
-        "Sucesso absoluto! Base de dados de 60 itens dinamicamente estruturada para o site."
-    )
+    print("Sucesso absoluto! Base de dados gerada com sucesso.")
 
 
 if __name__ == "__main__":
