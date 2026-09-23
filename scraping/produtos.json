@@ -1,5 +1,5 @@
 [
     {
-        "erro": "Falha na API do Mercado Livre: 'utf-8' codec can't decode byte 0xb4 in position 5: invalid start byte"
+        "erro": "Falha na API do Mercado Livre: Expecting value: line 1 column 1 (char 0)"
     }
 ]
