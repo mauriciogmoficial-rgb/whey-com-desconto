@@ -1,44 +1,37 @@
-import gzip
 import json
 import urllib.request
 
 
 def buscar_mercado_livre_github():
-    # URL oficial estável para buscar Whey Protein
+    # URL oficial estável da API pública do Mercado Livre para Whey Protein
     url = "https://mercadolivre.com"
 
-    print("Iniciando busca oficial com cabeçalhos camuflados antibloqueio...")
+    print("Iniciando busca oficial com cabeçalhos de navegador (Texto Puro)...")
 
     try:
-        # === CORREÇÃO CRUCIAL: Simulador de Navegador Humano Completo ===
+        # Mantém a simulação do navegador, mas remove o Accept-Encoding para receber JSON puro
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
             "Accept": "application/json",
             "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate, br",
             "Connection": "keep-alive",
         }
 
         req = urllib.request.Request(url, headers=headers)
 
-        # Abre a conexão tratando respostas comprimidas (gzip) que enganam o sistema de segurança
+        # Abre a conexão e lê o JSON de texto puro diretamente
         with urllib.request.urlopen(req) as response:
             conteudo = response.read()
-
-            # Se o Mercado Livre respondeu compactado, descompacta antes de ler
-            if response.info().get("Content-Encoding") == "gzip":
-                conteudo = gzip.decompress(conteudo)
-
             dados = json.loads(conteudo.decode("utf-8"))
 
         produtos = []
         resultados = dados.get("results", [])
 
-        # Se a API veio vazia mas não deu erro, avisa no arquivo
+        # Se a API vier vazia por algum motivo, deixa um aviso
         if not resultados:
             produtos.append({"aviso": "A API respondeu, mas a lista de resultados veio zerada."})
 
-        # Estrutura os produtos reais encontrados
+        # Estrutura os produtos exatamente no formato do seu projeto
         for item in resultados:
             produtos.append({
                 "titulo": item.get("title"),
@@ -46,14 +39,14 @@ def buscar_mercado_livre_github():
                 "link": item.get("permalink"),
             })
 
-        # Grava os dados limpos no repositório
+        # Grava os dados limpos no seu repositório
         with open("scraping/produtos.json", "w", encoding="utf-8") as f:
             json.dump(produtos, f, ensure_ascii=False, indent=4)
 
-        print(f"Sucesso total! {len(produtos)} produtos reais foram integrados.")
+        print(f"Sucesso total! {len(produtos)} produtos reais foram salvos.")
 
     except Exception as e:
-        # Registra o diagnóstico preciso caso ocorra outra rejeição
+        # Se houver qualquer falha, registra para sabermos o motivo exato
         erro_msg = [{"erro": f"Falha na API do Mercado Livre: {str(e)}"}]
         with open("scraping/produtos.json", "w", encoding="utf-8") as f:
             json.dump(erro_msg, f, ensure_ascii=False, indent=4)
