@@ -1,5 +1,5 @@
 [
     {
-        "erro": "Falha no túnel de segurança da API: <urlopen error [Errno -2] Name or service not known>"
+        "erro": "Bloqueio de segurança detectado: Expecting value: line 1 column 1 (char 0)"
     }
 ]
