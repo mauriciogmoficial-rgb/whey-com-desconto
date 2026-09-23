@@ -1,5 +1,5 @@
 [
     {
-        "erro": "Bloqueio de segurança detectado: Expecting value: line 1 column 1 (char 0)"
+        "erro": "Erro no fluxo oficial de API: HTTP Error 403: Forbidden"
     }
 ]
