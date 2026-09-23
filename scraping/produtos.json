@@ -1,5 +1,5 @@
 [
     {
-        "erro": "Erro no fluxo oficial de API: HTTP Error 403: Forbidden"
+        "erro": "Falha na simulação visual do navegador: Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"https://mercadolivre.com.br[A:whey%20protein]\", waiting until \"networkidle\"\n"
     }
 ]
