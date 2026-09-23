@@ -10,10 +10,8 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
     GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
     SEARCH_ENGINE_ID = os.environ.get("SEARCH_ENGINE_ID")
 
-    # Garante que os espaços virem "+" na URL sem quebrar o protocolo HTTP
-    query_limpa = termo_busca.replace(" ", "+")
-    query_codificada = urllib.parse.quote(query_limpa)
-
+    # URL super limpa: codifica diretamente o termo para evitar qualquer erro de caractere ou espaço
+    query_codificada = urllib.parse.quote(termo_busca)
     url = f"https://googleapis.com{GOOGLE_API_KEY}&cx={SEARCH_ENGINE_ID}&num=20&q={query_codificada}"
 
     lista_produtos = []
@@ -29,7 +27,7 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
         for item in items:
             pagemap = item.get("pagemap", {})
 
-            # 1. Extração segura do preço do dicionário
+            # 1. Extração segura do preço
             offers = pagemap.get("offer", [{}])
             preco_puro = ""
             if isinstance(offers, list) and len(offers) > 0:
@@ -62,12 +60,14 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             link_original = item.get("link", "https://mercadolivre.com.br")
             link_afiliado = f"{link_original}?matt_tool=55954375"
 
-            # === CORREÇÃO DEFINITIVA DO TÍTULO: Limpa os textos sem misturar lista com string ===
+            # === REVISÃO COMPLETA DO TÍTULO: Tratamento 100% em texto puro ===
             titulo_original = item.get("title", "Produto Suplemento")
             titulo_limpo = titulo_original.replace(" | Mercado Livre", "").strip()
+
+            # Se houver traço, corta o texto de forma segura usando índices de string
             if " - " in titulo_limpo:
-                # Pega apenas a primeira parte do título antes do traço e remove espaços extras
-                titulo_limpo = titulo_limpo.split(" - ")[0].strip()
+                partes = titulo_limpo.split(" - ")
+                titulo_limpo = partes[0].strip()
 
             lista_produtos.append({
                 "categoria": categoria_nome,
@@ -99,22 +99,16 @@ def define_tag_visual(lista):
 
 def main():
     dados_finais = {
-        "whey_protein": buscar_categoria_no_google(
-            "whey protein concentrado", "Whey Protein"
-        ),
-        "creatina": buscar_categoria_no_google(
-            "creatina monohidratada pura", "Creatina"
-        ),
-        "acessorios": buscar_categoria_no_google(
-            "coqueteleira academia shaker", "Acessórios"
-        ),
+        "whey_protein": buscar_categoria_no_google("whey protein", "Whey Protein"),
+        "creatina": buscar_categoria_no_google("creatina monohidratada", "Creatina"),
+        "acessorios": buscar_categoria_no_google("coqueteleira academia shaker", "Acessórios"),
     }
 
     os.makedirs("scraping", exist_ok=True)
     with open("scraping/produtos.json", "w", encoding="utf-8") as f:
         json.dump(dados_finais, f, ensure_ascii=False, indent=4)
 
-    print("Sucesso absoluto! Base de dados gerada com sucesso.")
+    print("Sucesso absoluto! Base de dados gerada de verdade.")
 
 
 if __name__ == "__main__":
