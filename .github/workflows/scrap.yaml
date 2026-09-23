@@ -19,14 +19,11 @@ jobs:
       with:
         python-version: '3.11'
 
-    # === INSTALAÇÃO DO SIMULADOR DE TELA NA NUVEM ===
-    - name: Instalar Playwright e Dependências
-      run: |
-        python -m pip install --upgrade pip
-        pip install playwright
-        playwright install chromium --with-deps
-
-    - name: Executar Navegador Automatizado
+    - name: Executar Script Python Autenticado via Google
+      # Injeta as chaves do cofre direto na memória do script Python na nuvem
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        SEARCH_ENGINE_ID: ${{ secrets.SEARCH_ENGINE_ID }}
       run: |
         python scraping/scrap.py
 
@@ -35,5 +32,5 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@://github.com"
         git add scraping/produtos.json
-        git commit -m "Automação: Atualiza lista via Simulador Visuall Playwright" || echo "Sem alterações para salvar"
+        git commit -m "Automação: Sincroniza 60 suplementos dinamicamente via Google Search" || echo "Sem alterações para salvar"
         git push
