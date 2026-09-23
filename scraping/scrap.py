@@ -10,8 +10,9 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
     GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
     SEARCH_ENGINE_ID = os.environ.get("SEARCH_ENGINE_ID")
 
-    # === CORREÇÃO CRUCIAL: Passa apenas o termo limpo, pois o motor já filtra o Mercado Livre sozinho ===
-    query_codificada = urllib.parse.quote(termo_busca)
+    # Garante que os espaços virem "+" na URL sem quebrar o protocolo HTTP
+    query_limpa = termo_busca.replace(" ", "+")
+    query_codificada = urllib.parse.quote(query_limpa)
 
     url = f"https://googleapis.com{GOOGLE_API_KEY}&cx={SEARCH_ENGINE_ID}&num=20&q={query_codificada}"
 
@@ -28,7 +29,7 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
         for item in items:
             pagemap = item.get("pagemap", {})
 
-            # 1. Extração segura do preço
+            # 1. Extração segura do preço do dicionário
             offers = pagemap.get("offer", [{}])
             preco_puro = ""
             if isinstance(offers, list) and len(offers) > 0:
@@ -43,7 +44,7 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
 
             preco_antigo = round(preco_atual * 1.20, 2)
 
-            # 2. Extração da Imagem oficial em HD
+            # 2. Extração segura da Imagem em HD
             cse_image = pagemap.get("cse_image", [{}])
             imagem_url = ""
             if isinstance(cse_image, list) and len(cse_image) > 0:
@@ -57,14 +58,15 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             if imagem_url.startswith("http://"):
                 imagem_url = imagem_url.replace("http://", "https://")
 
-            # 3. Link de compra com sua tag de afiliado
+            # 3. Link de afiliados estruturado
             link_original = item.get("link", "https://mercadolivre.com.br")
             link_afiliado = f"{link_original}?matt_tool=55954375"
 
-            # 4. Limpeza segura do título sem quebrar listas
+            # === CORREÇÃO DEFINITIVA DO TÍTULO: Limpa os textos sem misturar lista com string ===
             titulo_original = item.get("title", "Produto Suplemento")
             titulo_limpo = titulo_original.replace(" | Mercado Livre", "").strip()
             if " - " in titulo_limpo:
+                # Pega apenas a primeira parte do título antes do traço e remove espaços extras
                 titulo_limpo = titulo_limpo.split(" - ")[0].strip()
 
             lista_produtos.append({
@@ -96,11 +98,16 @@ def define_tag_visual(lista):
 
 
 def main():
-    # Termos de busca objetivos que o Google adora mapear
     dados_finais = {
-        "whey_protein": buscar_categoria_no_google("whey protein concentrado", "Whey Protein"),
-        "creatina": buscar_categoria_no_google("creatina monohidratada pura", "Creatina"),
-        "acessorios": buscar_categoria_no_google("coqueteleira shaker academia", "Acessórios"),
+        "whey_protein": buscar_categoria_no_google(
+            "whey protein concentrado", "Whey Protein"
+        ),
+        "creatina": buscar_categoria_no_google(
+            "creatina monohidratada pura", "Creatina"
+        ),
+        "acessorios": buscar_categoria_no_google(
+            "coqueteleira academia shaker", "Acessórios"
+        ),
     }
 
     os.makedirs("scraping", exist_ok=True)
