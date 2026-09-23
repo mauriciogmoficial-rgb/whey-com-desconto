@@ -1,3 +1,5 @@
-﻿{
-    "resultado_bruto":  "API respondeu com sucesso, mas o filtro falhou"
-}
+[
+    {
+        "erro": "Falha na API do Mercado Livre: URL can't contain control characters. 'mercadolivre.comwhey protein' (found at least ' ')"
+    }
+]
