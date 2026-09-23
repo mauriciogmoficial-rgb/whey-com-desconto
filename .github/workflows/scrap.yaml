@@ -7,6 +7,9 @@ jobs:
   rodar-scrap:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
     - name: Copiar código do repositório
       uses: actions/checkout@v4
@@ -18,10 +21,12 @@ jobs:
 
     - name: Executar Script Python
       run: |
-        echo "whey" | python scraping/scrap.py
+        python scraping/scrap.py
 
-    - name: Salvar produtos.json gerado
-      uses: actions/upload-artifact@v4
-      with:
-        name: resultado-produtos-json
-        path: scraping/produtos.json
+    - name: Salvar produtos.json automaticamente no repositório
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@://github.com"
+        git add scraping/produtos.json
+        git commit -m "Automação: Atualiza lista de produtos.json com dados reais" || echo "Sem alterações para salvar"
+        git push

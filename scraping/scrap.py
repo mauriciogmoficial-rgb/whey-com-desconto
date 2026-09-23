@@ -1,51 +1,54 @@
 import json
-import ssl
+import urllib.parse
 import urllib.request
 
-def buscar_mercado_livre_oficial(termo_busca):
-    # Formata o termo de busca para a URL oficial da API do Mercado Livre
-    termo_api = urllib.parse.quote(termo_busca.strip())
+def buscar_mercado_livre_github():
+    # Como roda no GitHub Actions, fixamos o termo 'whey protein' diretamente aqui
+    termo_busca = "whey protein"
+    termo_api = urllib.parse.quote(termo_busca)
     url = f"https://mercadolivre.com{termo_api}"
     
-    print(f"Buscando por '{termo_busca}' no Mercado Livre...")
-    
-    # Ignora validações locais de SSL que o seu Windows antigo falha em checar
-    contexto_ssl = ssl._create_unverified_context()
+    print(f"Iniciando busca oficial por: {termo_busca}")
     
     try:
-        # Define os cabeçalhos padrão recomendados pela documentação
+        # Configura a requisição com cabeçalhos limpos aceitos pelo Mercado Livre
         req = urllib.request.Request(
             url, 
             headers={
-                'User-Agent': 'Mozilla/5.0',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                 'Accept': 'application/json'
             }
         )
         
-        # Abre a conexão usando o motor nativo do Python
-        with urllib.request.urlopen(req, context=contexto_ssl) as response:
-            # Converte o texto recebido diretamente em um dicionário Python
+        # Abre a conexão e lê os dados brutos da API
+        with urllib.request.urlopen(req) as response:
             dados = json.loads(response.read().decode('utf-8'))
             
         produtos = []
+        resultados = dados.get('results', [])
         
-        # Lê a lista de resultados exatamente como documentado na API do Mercado Livre
-        for item in dados.get('results', []):
+        print(f"Produtos retornados pela API: {len(resultados)}")
+        
+        # Extrai os campos exatamente como documentado na API oficial
+        for item in resultados:
             produtos.append({
                 "titulo": item.get('title'),
                 "preco": float(item.get('price', 0)),
                 "link": item.get('permalink')
             })
             
-        # Salva o arquivo final estruturado
-        with open('produtos.json', 'w', encoding='utf-8') as f:
+        # Salva o arquivo final estruturado na pasta correta
+        with open('scraping/produtos.json', 'w', encoding='utf-8') as f:
             json.dump(produtos, f, ensure_ascii=False, indent=4)
             
-        print(f"Sucesso total! O arquivo 'produtos.json' foi criado com {len(produtos)} produtos.")
+        print(f"Sucesso total! {len(produtos)} produtos estruturados salvos em produtos.json.")
         
     except Exception as e:
-        print(f"Ocorreu um erro ao processar os dados: {e}")
+        # Fallback caso a requisição HTTP falhe na nuvem
+        erro_msg = [{"erro": f"Falha na API do Mercado Livre: {str(e)}"}]
+        with open('scraping/produtos.json', 'w', encoding='utf-8') as f:
+            json.dump(erro_msg, f, ensure_ascii=False, indent=4)
+        print(f"Ocorreu um erro no processamento: {e}")
 
 if __name__ == "__main__":
-    termo = input("Digite o produto que deseja buscar: ")
-    buscar_mercado_livre_oficial(termo)
+    buscar_mercado_livre_github()
