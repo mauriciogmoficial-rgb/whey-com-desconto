@@ -3,38 +3,43 @@ import os
 import urllib.request
 
 
-def gerar_produtos_definitivo():
-    print("Obtendo dados limpos e dinâmicos para a vitrine do site...")
+def gerar_produtos_real_em_massa():
+    print("Conectando ao espelho de dados estável do Mercado Livre...")
 
-    # URL pública de catálogo direto do Mercado Livre que responde JSON limpo sem barreiras
-    url = "https://mercadolivre.com"
+    # URL pública alternativa que nos entrega a lista de produtos limpa de ponta a ponta
+    url = "https://allorigins.win"
 
     try:
-        # Passa um cabeçalho simples padrão
         req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-                "Accept": "application/json",
-            },
+            url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         )
 
         with urllib.request.urlopen(req) as response:
-            dados = json.loads(response.read().decode("utf-8"))
+            resposta_proxy = json.loads(response.read().decode("utf-8"))
+            dados = json.loads(resposta_proxy.get("contents", "{}"))
 
         produtos = []
         resultados = dados.get("results", [])
 
-        # Processa os 20 primeiros produtos trazendo títulos, preços e imagens reais
-        for item in resultados[:20]:
+        print(f"Total de produtos capturados no espelho: {len(resultados)}")
+
+        # Varre todos os produtos disponíveis (geralmente 50 itens)
+        for item in resultados:
             foto = item.get("thumbnail", "")
-            # Força a imagem a usar o protocolo seguro HTTPS para carregar no seu site
+            # Ajusta para o formato seguro exigido pelos navegadores modernos
             if foto.startswith("http://"):
                 foto = foto.replace("http://", "https://")
+            # Substitui a foto minúscula da API pela imagem grande de alta definição
+            foto = foto.replace("-I.jpg", "-O.jpg").replace("-I.webp", "-O.webp")
 
             preco_atual = float(item.get("price", 0))
-            # Cria um preço antigo com 15% de desconto para alimentar o seu layout lindo
-            preco_original = round(preco_atual * 1.15, 2)
+
+            # Captura ou calcula o preço antigo para gerar as tags de % OFF no seu site
+            preco_original = item.get("original_price")
+            if not preco_original:
+                preco_original = round(preco_atual * 1.25, 2)
+            else:
+                preco_original = float(preco_original)
 
             produtos.append({
                 "titulo": item.get("title"),
@@ -44,50 +49,20 @@ def gerar_produtos_definitivo():
                 "imagem": foto,
             })
 
-        # Caso a API falhe silenciosamente, injeta dados reais de segurança para o seu index.html não quebrar
-        if not produtos:
-            raise Exception("A lista de resultados veio vazia.")
+        # Proteção caso o proxy fique instável: impede a gravação de arquivo zerado
+        if len(produtos) < 5:
+            raise Exception("Dados insuficientes retornados pelo espelho.")
 
-        # Força a gravação física correta do arquivo produtos.json
+        # Grava o arquivo produtos.json final populado em massa
         os.makedirs("scraping", exist_ok=True)
         with open("scraping/produtos.json", "w", encoding="utf-8") as f:
             json.dump(produtos, f, ensure_ascii=False, indent=4)
 
-        print(
-            f"Sucesso total e absoluto! {len(produtos)} produtos integrados com imagens."
-        )
+        print(f"Sucesso absoluto! {len(produtos)} produtos integrados com fotos em HD.")
 
     except Exception as e:
-        # Se houver qualquer erro de rede, ele gera dados mockados de alta fidelidade automáticos para o site funcionar
-        print(f"Houve uma falha na requisição pública: {e}. Injetando dados de contingência...")
-        contingencia = [
-            {
-                "titulo": "100% Whey Concentrado 1kg Growth Supplements Sabor Baunilha",
-                "preco": 108.00,
-                "preco_antigo": 124.20,
-                "link": "https://mercadolivre.com.br",
-                "imagem": "https://mlstatic.com",
-            },
-            {
-                "titulo": "Whey Protein Concentrado 1kg - Soldiers Nutrition Sabor Chocolate",
-                "preco": 94.90,
-                "preco_antigo": 109.15,
-                "link": "https://mercadolivre.com.br",
-                "imagem": "https://mlstatic.com",
-            },
-            {
-                "titulo": "Whey Protein Blend 900g - Max Titanium Sabor Chocolate",
-                "preco": 89.90,
-                "preco_antigo": 103.40,
-                "link": "https://mercadolivre.com.br",
-                "imagem": "https://mlstatic.com",
-            },
-        ]
-        os.makedirs("scraping", exist_ok=True)
-        with open("scraping/produtos.json", "w", encoding="utf-8") as f:
-            json.dump(contingencia, f, ensure_ascii=False, indent=4)
-        print("Dados de contingência salvos com sucesso no produtos.json.")
+        print(f"Falha ao conectar com o espelho: {e}")
 
 
 if __name__ == "__main__":
-    gerar_produtos_definitivo()
+    gerar_produtos_real_em_massa()
