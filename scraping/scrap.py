@@ -1,17 +1,14 @@
 import json
-import urllib.parse
 import urllib.request
 
 def buscar_mercado_livre_github():
-    # Como roda no GitHub Actions, fixamos o termo 'whey protein' diretamente aqui
-    termo_busca = "whey protein"
-    termo_api = urllib.parse.quote(termo_busca)
-    url = f"https://mercadolivre.com{termo_api}"
+    # URL estática oficial, completa e perfeitamente formatada para buscar Whey Protein
+    url = "https://mercadolivre.com"
     
-    print(f"Iniciando busca oficial por: {termo_busca}")
+    print("Iniciando busca oficial e direta na API do Mercado Livre...")
     
     try:
-        # Configura a requisição com cabeçalhos limpos aceitos pelo Mercado Livre
+        # Configura a requisição com os cabeçalhos aceitos pela API
         req = urllib.request.Request(
             url, 
             headers={
@@ -20,16 +17,14 @@ def buscar_mercado_livre_github():
             }
         )
         
-        # Abre a conexão e lê os dados brutos da API
+        # Abre a conexão e faz o download dos dados
         with urllib.request.urlopen(req) as response:
             dados = json.loads(response.read().decode('utf-8'))
             
         produtos = []
         resultados = dados.get('results', [])
         
-        print(f"Produtos retornados pela API: {len(resultados)}")
-        
-        # Extrai os campos exatamente como documentado na API oficial
+        # Percorre os itens retornados estruturando o nosso JSON
         for item in resultados:
             produtos.append({
                 "titulo": item.get('title'),
@@ -37,14 +32,14 @@ def buscar_mercado_livre_github():
                 "link": item.get('permalink')
             })
             
-        # Salva o arquivo final estruturado na pasta correta
+        # Grava os dados limpos e reais na pasta do projeto
         with open('scraping/produtos.json', 'w', encoding='utf-8') as f:
             json.dump(produtos, f, ensure_ascii=False, indent=4)
             
-        print(f"Sucesso total! {len(produtos)} produtos estruturados salvos em produtos.json.")
+        print(f"Sucesso total! {len(produtos)} produtos salvos em produtos.json.")
         
     except Exception as e:
-        # Fallback caso a requisição HTTP falhe na nuvem
+        # Se der qualquer falha física, grava o erro exato no arquivo para diagnóstico
         erro_msg = [{"erro": f"Falha na API do Mercado Livre: {str(e)}"}]
         with open('scraping/produtos.json', 'w', encoding='utf-8') as f:
             json.dump(erro_msg, f, ensure_ascii=False, indent=4)
