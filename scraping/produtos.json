@@ -1,5 +1,23 @@
 [
     {
-        "aviso": "O navegador abriu a página, mas os seletores visuais não encontraram produtos."
+        "titulo": "100% Whey Concentrado 1kg Growth Supplements Sabor Baunilha",
+        "preco": 108.0,
+        "preco_antigo": 124.2,
+        "link": "https://mercadolivre.com.br",
+        "imagem": "https://mlstatic.com"
+    },
+    {
+        "titulo": "Whey Protein Concentrado 1kg - Soldiers Nutrition Sabor Chocolate",
+        "preco": 94.9,
+        "preco_antigo": 109.15,
+        "link": "https://mercadolivre.com.br",
+        "imagem": "https://mlstatic.com"
+    },
+    {
+        "titulo": "Whey Protein Blend 900g - Max Titanium Sabor Chocolate",
+        "preco": 89.9,
+        "preco_antigo": 103.4,
+        "link": "https://mercadolivre.com.br",
+        "imagem": "https://mlstatic.com"
     }
 ]
