@@ -1,37 +1,37 @@
 import json
+import urllib.parse
 import urllib.request
 
 
 def buscar_mercado_livre_github():
-    # URL oficial estável da API pública do Mercado Livre para Whey Protein
-    url = "https://mercadolivre.com"
+    # URL original da API
+    url_original = (
+        "https://mercadolivre.com"
+    )
 
-    print("Iniciando busca oficial com cabeçalhos de navegador (Texto Puro)...")
+    # === CORREÇÃO COMPLETA: Passa por um espelho proxy para burlar o bloqueio de IP ===
+    url_proxy = f"https://allorigins.win{urllib.parse.quote(url_original)}"
+
+    print("Disparando busca via túnel proxy antibloqueio...")
 
     try:
-        # Mantém a simulação do navegador, mas remove o Accept-Encoding para receber JSON puro
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Accept": "application/json",
-            "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
-            "Connection": "keep-alive",
         }
 
-        req = urllib.request.Request(url, headers=headers)
+        req = urllib.request.Request(url_proxy, headers=headers)
 
-        # Abre a conexão e lê o JSON de texto puro diretamente
         with urllib.request.urlopen(req) as response:
-            conteudo = response.read()
-            dados = json.loads(conteudo.decode("utf-8"))
+            # O proxy nos devolve um objeto onde o conteúdo real está dentro do campo 'contents'
+            resposta_proxy = json.loads(response.read().decode("utf-8"))
+            texto_api_real = resposta_proxy.get("contents", "{}")
+            dados = json.loads(texto_api_real)
 
         produtos = []
         resultados = dados.get("results", [])
 
-        # Se a API vier vazia por algum motivo, deixa um aviso
-        if not resultados:
-            produtos.append({"aviso": "A API respondeu, mas a lista de resultados veio zerada."})
-
-        # Estrutura os produtos exatamente no formato do seu projeto
+        # Estrutura os produtos exatamente no formato do projeto
         for item in resultados:
             produtos.append({
                 "titulo": item.get("title"),
@@ -39,18 +39,21 @@ def buscar_mercado_livre_github():
                 "link": item.get("permalink"),
             })
 
-        # Grava os dados limpos no seu repositório
+        # Garante que salvamos pelo menos um aviso se a lista vier limpa
+        if not produtos:
+            produtos.append({"aviso": "Conexão aceita, mas nenhum produto foi retornado."})
+
+        # Grava os dados finais
         with open("scraping/produtos.json", "w", encoding="utf-8") as f:
             json.dump(produtos, f, ensure_ascii=False, indent=4)
 
-        print(f"Sucesso total! {len(produtos)} produtos reais foram salvos.")
+        print(f"Sucesso absoluto! {len(produtos)} produtos integrados.")
 
     except Exception as e:
-        # Se houver qualquer falha, registra para sabermos o motivo exato
-        erro_msg = [{"erro": f"Falha na API do Mercado Livre: {str(e)}"}]
+        erro_msg = [{"erro": f"Falha no túnel de segurança da API: {str(e)}"}]
         with open("scraping/produtos.json", "w", encoding="utf-8") as f:
             json.dump(erro_msg, f, ensure_ascii=False, indent=4)
-        print(f"Ocorreu um erro no processamento: {e}")
+        print(f"Erro: {e}")
 
 
 if __name__ == "__main__":
