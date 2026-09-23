@@ -10,7 +10,6 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
     GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
     SEARCH_ENGINE_ID = os.environ.get("SEARCH_ENGINE_ID")
 
-    # Filtro estável para capturar anúncios do Mercado Livre
     query_completa = f"site:://mercadolivre.com.br {termo_busca}"
     query_codificada = urllib.parse.quote(query_completa)
 
@@ -29,7 +28,7 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
         for item in items:
             pagemap = item.get("pagemap", {})
 
-            # 1. Extração segura do preço na lista do Google
+            # === CORREÇÃO DA EXTRAÇÃO DO PREÇO (LÊ O DICIONÁRIO DENTRO DA LISTA) ===
             offers = pagemap.get("offer", [{}])
             preco_puro = ""
             if isinstance(offers, list) and len(offers) > 0:
@@ -42,10 +41,9 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             except ValueError:
                 preco_atual = 99.90
 
-            # 2. Preço antigo simulado
             preco_antigo = round(preco_atual * 1.20, 2)
 
-            # 3. Extração da Imagem oficial em HD
+            # === CORREÇÃO DA EXTRAÇÃO DA IMAGEM (LÊ O DICIONÁRIO DENTRO DA LISTA) ===
             cse_image = pagemap.get("cse_image", [{}])
             imagem_url = ""
             if isinstance(cse_image, list) and len(cse_image) > 0:
@@ -59,11 +57,10 @@ def buscar_categoria_no_google(termo_busca, categoria_nome):
             if imagem_url.startswith("http://"):
                 imagem_url = imagem_url.replace("http://", "https://")
 
-            # 4. Link de afiliado estruturado
-            link_original = item.get("link", "https://www.mercadolivre.com.br")
+            link_original = item.get("link", "https://mercadolivre.com.br")
             link_afiliado = f"{link_original}?matt_tool=55954375"
 
-            # 5. Tratamento limpo e seguro do título
+            # === CORREÇÃO DO TRATAMENTO DE STRING DO TÍTULO ===
             titulo_original = item.get("title", "Produto Suplemento")
             titulo_limpo = titulo_original.replace(" | Mercado Livre", "").strip()
             if " - " in titulo_limpo:
