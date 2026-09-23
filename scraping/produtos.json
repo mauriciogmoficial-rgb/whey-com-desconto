@@ -1,5 +1,5 @@
 [
     {
-        "erro": "Falha na API do Mercado Livre: URL can't contain control characters. 'mercadolivre.comwhey protein' (found at least ' ')"
+        "erro": "Falha na API do Mercado Livre: Expecting value: line 1 column 1 (char 0)"
     }
 ]
