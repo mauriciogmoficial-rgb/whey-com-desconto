@@ -4,7 +4,6 @@ import os
 from urllib.parse import urlparse, parse_qs, unquote
 from bs4 import BeautifulSoup
 
-# Seu ID de ferramenta/afiliado para o Mercado Livre
 ID_AFILIADO = "55954375"
 NOME_ARQUIVO_HTML = "pagina.html"
 
@@ -16,9 +15,9 @@ def limpar_link_mercadolivre(link_original):
         parsed_url = urlparse(link_original)
         captured_params = parse_qs(parsed_url.query)
         if 'u' in captured_params:
-            link_original = captured_params['u'][0] if isinstance(captured_params['u'], list) else captured_params['u']
+            link_original = captured_params['u'] if isinstance(captured_params['u'], list) else captured_params['u']
         elif 'redirect_url' in captured_params:
-            link_original = captured_params['redirect_url'][0] if isinstance(captured_params['redirect_url'], list) else captured_params['redirect_url']
+            link_original = captured_params['redirect_url'] if isinstance(captured_params['redirect_url'], list) else captured_params['redirect_url']
             
     return unquote(link_original)
 
@@ -30,24 +29,57 @@ def definir_tag_filtro(titulo):
         return "acessorios"
     return "whey"
 
+def otimizar_url_imagem(container_item):
+    """
+    Busca a tag de imagem dentro da estrutura correta do poly-card (poly-card__portada)
+    e garante que puxe a imagem em alta resolução (-V.webp).
+    """
+    if not container_item:
+        return ""
+        
+    # Busca especificamente dentro da div da capa (poly-card__portada) ou fallback geral de img
+    capa = container_item.select_one(".poly-card__portada")
+    img_tag = capa.find("img") if capa else container_item.find("img")
+    
+    if not img_tag:
+        return ""
+        
+    # O Mercado Livre armazena a URL real em múltiplos locais dependendo do estado do download
+    url_img = (
+        img_tag.get("data-src") or 
+        img_tag.get("data-lazy") or 
+        img_tag.get("src") or 
+        img_tag.get("dynamic-src") or ""
+    )
+    
+    # Se capturar o link da imagem em branco transparente (placeholder de lazy load), força a leitura do src comum
+    if not url_img or "data:image" in url_img or "blank.gif" in url_img:
+        url_img = img_tag.get("src") or ""
+
+    if url_img:
+        # Se a imagem capturada for uma miniatura de listagem interna, 
+        # substitui as tags de tamanho para puxar a foto oficial grande da API deles (-V.webp)
+        url_img = url_img.replace("-I.jpg", "-O.jpg").replace("-I.webp", "-O.webp")
+        url_img = url_img.replace("-O.jpg", "-V.jpg").replace("-O.webp", "-V.webp")
+        
+    return url_img
+
 def extrair_dados_do_html_local():
     lista_produtos = []
 
-    # Verifica se você salvou o arquivo na pasta certa
     if not os.path.exists(NOME_ARQUIVO_HTML):
-        print(f"Erro: O arquivo '{NOME_ARQUIVO_HTML}' não foi encontrado na pasta do script!")
-        print("Por favor, salve a página do Mercado Livre com este nome exato nesta pasta.")
+        print(f"Erro: O arquivo '{NOME_ARQUIVO_HTML}' não foi encontrado!")
         return
 
-    print(f"Lendo e processando o arquivo local '{NOME_ARQUIVO_HTML}'...")
+    print(f"Processando código renderizado do arquivo '{NOME_ARQUIVO_HTML}'...")
     with open(NOME_ARQUIVO_HTML, "r", encoding="utf-8") as f:
         html_local = f.read()
 
     soup = BeautifulSoup(html_local, "html.parser")
     
-    # Seletor universal robusto para capturar os blocos de produtos salvos
-    itens = soup.select(".poly-card, [class*='poly-card'], .ui-search-layout__item, .ui-search-result__wrapper, .ui-search-result, .ui-search-layout__item-v2")
-    print(f"Estrutura mapeada: Encontrados {len(itens)} blocos estruturais no seu HTML salvo.")
+    # Seletores estruturais mapeados na aba Elements do seu DevTools
+    itens = soup.select(".poly-card, [class*='poly-card'], .ui-search-layout__item, .ui-search-result__wrapper, .ui-search-result")
+    print(f"Estrutura localizada: {len(itens)} possíveis blocos de produtos identificados.")
 
     for item in itens:
         try:
@@ -75,11 +107,10 @@ def extrair_dados_do_html_local():
                 continue
 
             link_limpo = limpar_link_mercadolivre(raw_link)
-            base_link = link_limpo.split("#")[0] # Remove âncoras internas e garante string limpa
+            base_link = link_limpo.split("#")
             divisor = "&" if "?" in base_link else "?"
             link_afiliado = f"{base_link}{divisor}matt_tool={ID_AFILIADO}"
 
-            # Extração de Preços
             valores_container = item.find_all("span", class_="andes-money-amount")
             preco_antigo = "Não informado"
             preco_atual = "Não informado"
@@ -115,10 +146,9 @@ def extrair_dados_do_html_local():
             elif "full" in texto_bloco:
                 frete = "Envio Full"
 
-            img_tag = item.find("img")
-            imagem = ""
-            if img_tag:
-                imagem = img_tag.get("data-src") or img_tag.get("src") or img_tag.get("data-lazy") or ""
+            # --- ATUALIZAÇÃO DA EXTRAÇÃO DA IMAGEM ---
+            # Passa o bloco inteiro do produto para a nossa nova função de varredura de capas
+            imagem = otimizar_url_imagem(item)
 
             tag_filtro = definir_tag_filtro(titulo)
 
@@ -149,11 +179,10 @@ def extrair_dados_do_html_local():
         except Exception:
             continue
 
-    # Salva o arquivo final que o seu index.html vai ler
     with open("produtos.json", "w", encoding="utf-8") as arquivo_json:
         json.dump(lista_produtos, arquivo_json, indent=2, ensure_ascii=False)
 
-    print(f"\n[SUCESSO] O arquivo 'produtos.json' foi gerado instantaneamente com {len(lista_produtos)} produtos!")
+    print(f"\n[SUCESSO] Arquivo 'produtos.json' regerado com os links de capa! Total de {len(lista_produtos)} suplementos.")
 
 if __name__ == "__main__":
     extrair_dados_do_html_local()
