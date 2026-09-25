@@ -242,7 +242,7 @@ function renderizar(lista) {
         // O próprio navegador monta o link do produto e da foto usando o ID
         //const linkRealCompleto = produto.link_afiliado;
 // Remove o formato problemático /p/ e reconstrói a URL usando o padrão universal de anúncios do Mercado Livre
-const linkRealCompleto = produto.link_afiliado.replace('/p/MLB', '/jm/item?item_id=MLB');
+const linkRealCompleto = produto.link_afiliado;
 
 console.log("Link carregado do JSON:", linkRealCompleto);
 
