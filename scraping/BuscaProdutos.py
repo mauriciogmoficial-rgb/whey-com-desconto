@@ -15,9 +15,9 @@ def limpar_link_mercadolivre(link_original):
         parsed_url = urlparse(link_original)
         captured_params = parse_qs(parsed_url.query)
         if 'u' in captured_params:
-            link_original = captured_params['u'] if isinstance(captured_params['u'], list) else captured_params['u']
+            link_original = captured_params['u'][0] if isinstance(captured_params['u'], list) else captured_params['u']
         elif 'redirect_url' in captured_params:
-            link_original = captured_params['redirect_url'] if isinstance(captured_params['redirect_url'], list) else captured_params['redirect_url']
+            link_original = captured_params['redirect_url'][0] if isinstance(captured_params['redirect_url'], list) else captured_params['redirect_url']
             
     return unquote(link_original)
 
@@ -29,39 +29,57 @@ def definir_tag_filtro(titulo):
         return "acessorios"
     return "whey"
 
-def otimizar_url_imagem(container_item):
+def extrair_link_imagem_real(container_item):
     """
-    Busca a tag de imagem dentro da estrutura correta do poly-card (poly-card__portada)
-    e garante que puxe a imagem em alta resolução (-V.webp).
+    Rastreia a fundo a nova estrutura poly-card buscando por tags picture,
+    srcset ou atributos data para capturar o link real da imagem no mlstatic.
     """
     if not container_item:
         return ""
         
-    # Busca especificamente dentro da div da capa (poly-card__portada) ou fallback geral de img
-    capa = container_item.select_one(".poly-card__portada")
-    img_tag = capa.find("img") if capa else container_item.find("img")
+    # Busca prioritariamente na área da capa do card
+    capa = container_item.select_one(".poly-card__portada") or container_item
     
-    if not img_tag:
-        return ""
-        
-    # O Mercado Livre armazena a URL real em múltiplos locais dependendo do estado do download
-    url_img = (
-        img_tag.get("data-src") or 
-        img_tag.get("data-lazy") or 
-        img_tag.get("src") or 
-        img_tag.get("dynamic-src") or ""
-    )
-    
-    # Se capturar o link da imagem em branco transparente (placeholder de lazy load), força a leitura do src comum
-    if not url_img or "data:image" in url_img or "blank.gif" in url_img:
-        url_img = img_tag.get("src") or ""
+    # 1. Tenta extrair de uma tag <picture> ou de múltiplos <source> se existirem
+    sources = capa.find_all("source")
+    for source in sources:
+        srcset = source.get("srcset") or source.get("data-srcset")
+        if srcset:
+            # Pega o primeiro link válido que contenha o servidor do ML
+            links = [l.strip().split(" ")[0] for l in srcset.split(",")]
+            for link in links:
+                if "mlstatic.com" in link and "data:image" not in link:
+                    return link
 
-    if url_img:
-        # Se a imagem capturada for uma miniatura de listagem interna, 
-        # substitui as tags de tamanho para puxar a foto oficial grande da API deles (-V.webp)
-        url_img = url_img.replace("-I.jpg", "-O.jpg").replace("-I.webp", "-O.webp")
-        url_img = url_img.replace("-O.jpg", "-V.jpg").replace("-O.webp", "-V.webp")
-        
+    # 2. Varre todas as tags <img> do bloco
+    imagens = capa.find_all("img")
+    for img in imagens:
+        # Lista ordenada de atributos onde o ML costuma esconder a foto real
+        atributos = ["data-src", "srcset", "data-srcset", "dynamic-src", "src", "data-lazy"]
+        for attr in atributos:
+            valor = img.get(attr)
+            if valor:
+                # Se for uma string longa de srcset, quebra para pegar o primeiro link
+                if "," in str(valor):
+                    links = [l.strip().split(" ")[0] for l in str(valor).split(",")]
+                    for link in links:
+                        if "mlstatic.com" in link and "data:image" not in link:
+                            return link
+                else:
+                    if "mlstatic.com" in str(valor) and "data:image" not in str(valor) and "blank.gif" not in str(valor):
+                        return str(valor)
+                        
+    return ""
+
+def otimizar_resolucao_imagem(url_img):
+    """
+    Força a imagem a puxar a versão em alta definição (-V.webp) se estiver em miniatura.
+    """
+    if not url_img:
+        return ""
+    # Converte os padrões de miniatura (-I ou -O) para o padrão grande (-V)
+    url_img = url_img.replace("-I.jpg", "-O.jpg").replace("-I.webp", "-O.webp")
+    url_img = url_img.replace("-O.jpg", "-V.jpg").replace("-O.webp", "-V.webp")
     return url_img
 
 def extrair_dados_do_html_local():
@@ -77,7 +95,7 @@ def extrair_dados_do_html_local():
 
     soup = BeautifulSoup(html_local, "html.parser")
     
-    # Seletores estruturais mapeados na aba Elements do seu DevTools
+    # Seletores estruturais do DevTools
     itens = soup.select(".poly-card, [class*='poly-card'], .ui-search-layout__item, .ui-search-result__wrapper, .ui-search-result")
     print(f"Estrutura localizada: {len(itens)} possíveis blocos de produtos identificados.")
 
@@ -107,7 +125,7 @@ def extrair_dados_do_html_local():
                 continue
 
             link_limpo = limpar_link_mercadolivre(raw_link)
-            base_link = link_limpo.split("#")
+            base_link = link_limpo.split("#")[0]
             divisor = "&" if "?" in base_link else "?"
             link_afiliado = f"{base_link}{divisor}matt_tool={ID_AFILIADO}"
 
@@ -146,9 +164,9 @@ def extrair_dados_do_html_local():
             elif "full" in texto_bloco:
                 frete = "Envio Full"
 
-            # --- ATUALIZAÇÃO DA EXTRAÇÃO DA IMAGEM ---
-            # Passa o bloco inteiro do produto para a nossa nova função de varredura de capas
-            imagem = otimizar_url_imagem(item)
+            # --- EXTRAÇÃO AVANÇADA DE IMAGENS ---
+            raw_imagem = extrair_link_imagem_real(item)
+            imagem = otimizar_resolucao_imagem(raw_imagem)
 
             tag_filtro = definir_tag_filtro(titulo)
 
@@ -182,7 +200,7 @@ def extrair_dados_do_html_local():
     with open("produtos.json", "w", encoding="utf-8") as arquivo_json:
         json.dump(lista_produtos, arquivo_json, indent=2, ensure_ascii=False)
 
-    print(f"\n[SUCESSO] Arquivo 'produtos.json' regerado com os links de capa! Total de {len(lista_produtos)} suplementos.")
+    print(f"\n[SUCESSO] Arquivo 'produtos.json' regerado com as fotos extraídas a fundo! Total: {len(lista_produtos)} produtos.")
 
 if __name__ == "__main__":
     extrair_dados_do_html_local()
