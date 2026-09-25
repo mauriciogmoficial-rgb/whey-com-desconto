@@ -253,7 +253,8 @@ console.log("Link carregado do JSON:", linkRealCompleto);
             <div class="card-produto">
                 <span class="tag-status">${produto.tag}</span>
                 <div class="imagem-container">
-                    <img src="${imagemRealCompleta}" alt="${produto.titulo}">
+                    <!-- Adicione o referrerpolicy="no-referrer" dentro da tag img do seu site -->
+                    <img src="${produto.image}" alt="${produto.title}" referrerpolicy="no-referrer">
                 </div>
                 <div class="conteudo-produto">
                     <h3>${produto.titulo}</h3>
