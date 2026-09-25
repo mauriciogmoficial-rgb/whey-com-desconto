@@ -1,92 +1,85 @@
 import json
 import re
+import os
 from urllib.parse import urlparse, parse_qs, unquote
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
 
-URL_BASE = "https://mercadolivre.com.br"
+# Seu ID de ferramenta/afiliado para o Mercado Livre
 ID_AFILIADO = "55954375"
+NOME_ARQUIVO_HTML = "pagina.html"
 
 def limpar_link_mercadolivre(link_original):
     if not link_original:
         return ""
+    link_original = str(link_original)
     if "click1.mercadolivre" in link_original or "mclics/click" in link_original:
         parsed_url = urlparse(link_original)
         captured_params = parse_qs(parsed_url.query)
         if 'u' in captured_params:
-            return unquote(captured_params['u'])
+            link_original = captured_params['u'][0] if isinstance(captured_params['u'], list) else captured_params['u']
         elif 'redirect_url' in captured_params:
-            return unquote(captured_params['redirect_url'])
-    return link_original
+            link_original = captured_params['redirect_url'][0] if isinstance(captured_params['redirect_url'], list) else captured_params['redirect_url']
+            
+    return unquote(link_original)
 
 def definir_tag_filtro(titulo):
-    """
-    Define a tag de filtro exata para que os botões do seu index.html
-    consigam separar os blocos na tela sem sumir com tudo.
-    """
     tit = titulo.lower()
     if "creatina" in tit:
         return "creatina"
     elif "coqueteleira" in tit or "shaker" in tit or "copo" in tit or "acessorio" in tit:
         return "acessorios"
-    # Como a página mãe já é filtrada, tudo o mais entra como whey por padrão
     return "whey"
 
-def extrair_dados_com_playwright():
+def extrair_dados_do_html_local():
     lista_produtos = []
 
-    with sync_playwright() as p:
-        print("Abrindo navegador em modo visível...")
-        browser = p.chromium.launch(headless=False) 
-        context = browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-        )
-        page = context.new_page()
+    # Verifica se você salvou o arquivo na pasta certa
+    if not os.path.exists(NOME_ARQUIVO_HTML):
+        print(f"Erro: O arquivo '{NOME_ARQUIVO_HTML}' não foi encontrado na pasta do script!")
+        print("Por favor, salve a página do Mercado Livre com este nome exato nesta pasta.")
+        return
 
-        print("Acessando a listagem de produtos no Mercado Livre...")
-        page.goto(URL_BASE, wait_until="load", timeout=60000)
-        
-        print("Aguardando carregamento da estrutura visual...")
-        page.wait_for_timeout(4000)
+    print(f"Lendo e processando o arquivo local '{NOME_ARQUIVO_HTML}'...")
+    with open(NOME_ARQUIVO_HTML, "r", encoding="utf-8") as f:
+        html_local = f.read()
 
-        # Rola a página em blocos médios idêntico ao script que trouxe os 110 itens
-        print("Rolando a página para forçar o carregamento de todos os itens...")
-        for i in range(1, 6):
-            page.evaluate(f"window.scrollTo(0, (document.body.scrollHeight / 5) * {i});")
-            page.wait_for_timeout(1000)
-
-        html_conteudo = page.content()
-        browser.close()
-
-    soup = BeautifulSoup(html_conteudo, "html.parser")
+    soup = BeautifulSoup(html_local, "html.parser")
     
-    # SELETOR CAMPEÃO: O mesmo que encontrou os 110 blocos estruturais soltos na página
-    itens = soup.select(".poly-card, [class*='poly-card'], .ui-search-layout__item")
-    print(f"\n[HTML Lido] Sucesso! Encontrados {len(itens)} blocos de produtos na página.")
+    # Seletor universal robusto para capturar os blocos de produtos salvos
+    itens = soup.select(".poly-card, [class*='poly-card'], .ui-search-layout__item, .ui-search-result__wrapper, .ui-search-result, .ui-search-layout__item-v2")
+    print(f"Estrutura mapeada: Encontrados {len(itens)} blocos estruturais no seu HTML salvo.")
 
     for item in itens:
         try:
-            titulo_tag = item.select_one("a.poly-component__title") or item.select_one(".poly-component__title-wrapper a")
-            if not titulo_tag:
-                titulo_tag = item.select_one(".ui-search-item__title, h2 a, h3 a")
+            titulo_tag = (
+                item.select_one("a.poly-component__title") or 
+                item.select_one(".poly-component__title-wrapper a") or
+                item.select_one(".ui-search-item__title") or
+                item.select_one(".ui-search-link") or
+                item.select_one("h2 a") or
+                item.select_one("h3 a")
+            )
+            
+            if titulo_tag and titulo_tag.name != "a":
+                titulo_tag = titulo_tag.find_parent("a") or titulo_tag.find("a") or titulo_tag
 
             if not titulo_tag:
                 continue
 
             titulo = titulo_tag.get_text(strip=True)
-            if not titulo:
+            if not titulo or len(titulo) < 5:
                 continue
 
-            raw_link = titulo_tag.get("href", "")
+            raw_link = titulo_tag.get("href", "") or (item.select_one("a")["href"] if item.select_one("a") else "")
             if not raw_link:
                 continue
 
             link_limpo = limpar_link_mercadolivre(raw_link)
-            base_link = link_limpo.split("#")
+            base_link = link_limpo.split("#")[0] # Remove âncoras internas e garante string limpa
             divisor = "&" if "?" in base_link else "?"
             link_afiliado = f"{base_link}{divisor}matt_tool={ID_AFILIADO}"
 
-            # Mapeamento do Preço Atual e Preço Antigo
+            # Extração de Preços
             valores_container = item.find_all("span", class_="andes-money-amount")
             preco_antigo = "Não informado"
             preco_atual = "Não informado"
@@ -109,11 +102,10 @@ def extrair_dados_com_playwright():
                     else:
                         preco_atual = valor_txt
 
-            # Desconto, Selo promocional e Frete
-            desconto_el = item.select_one(".poly-price__discount, .ui-search-price__discount")
+            desconto_el = item.select_one(".poly-price__discount, .ui-search-price__discount, .ui-search-item__discount-percentage")
             desconto = desconto_el.get_text(strip=True) if desconto_el else "Sem desconto"
 
-            selo_el = item.select_one(".poly-box--highlight, .ui-search-item__highlight-label")
+            selo_el = item.select_one(".poly-box--highlight, .ui-search-item__highlight-label, .ui-search-item__pub-label")
             selo_promocional = selo_el.get_text(strip=True).upper() if selo_el else ""
 
             frete = "Não especificado"
@@ -123,16 +115,13 @@ def extrair_dados_com_playwright():
             elif "full" in texto_bloco:
                 frete = "Envio Full"
 
-            # Imagem do Produto
             img_tag = item.find("img")
             imagem = ""
             if img_tag:
                 imagem = img_tag.get("data-src") or img_tag.get("src") or img_tag.get("data-lazy") or ""
 
-            # Vincula dinamicamente a tag ("whey", "creatina", "acessorios") para bater com o index.html
             tag_filtro = definir_tag_filtro(titulo)
 
-            # Evita duplicidade na listagem
             if any(p.get("titulo") == titulo and p.get("preco_atual") == preco_atual for p in lista_produtos):
                 continue
 
@@ -141,13 +130,12 @@ def extrair_dados_com_playwright():
                 "preco_antigo": preco_antigo,
                 "preco_atual": preco_atual,
                 "desconto": desconto,
-                "tag": tag_filtro,          # Atributo crucial corrigido para os filtros do seu site
+                "tag": tag_filtro,          
                 "selo": selo_promocional,    
                 "frete": frete,
-                "link_afiliado": link_afiliado,
+                "link_afiliado": link_afiliado, 
                 "imagem": imagem,
                 
-                # Mapeamento espelho para blindagem total do front-end
                 "title": titulo,
                 "oldPrice": preco_antigo,
                 "price": preco_atual,
@@ -161,11 +149,11 @@ def extrair_dados_com_playwright():
         except Exception:
             continue
 
-    # Gravação direta do JSON sem travas locais
+    # Salva o arquivo final que o seu index.html vai ler
     with open("produtos.json", "w", encoding="utf-8") as arquivo_json:
         json.dump(lista_produtos, arquivo_json, indent=2, ensure_ascii=False)
 
-    print(f"\n[SUCESSO] O arquivo 'produtos.json' foi restaurado e gerou {len(lista_produtos)} itens integrados!")
+    print(f"\n[SUCESSO] O arquivo 'produtos.json' foi gerado instantaneamente com {len(lista_produtos)} produtos!")
 
 if __name__ == "__main__":
-    extrair_dados_com_playwright()
+    extrair_dados_do_html_local()
