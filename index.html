@@ -130,8 +130,11 @@ footer {
             height: 40px;
             overflow: hidden;
             display: -webkit-box;
+            line-clamp: 2;
+            overflow: hidden;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            text-overflow: ellipsis; /* RECOMENDÁVEL: adiciona os "..." no final do texto */
         }
         .preco-antigo {
             color: #999;
