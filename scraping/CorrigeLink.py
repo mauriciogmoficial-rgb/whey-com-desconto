@@ -18,7 +18,7 @@ for produto in produtos:
         
         # Reconstrói usando a URL canônica oficial de redirecionamento do Mercado Livre
         url_limpa = f"https://mercadolivre.com.br/{id_numerico}"
-        url_afiliado_segura = f"{url_limpa}&matt_tool={seu_matt_tool}"
+        url_afiliado_segura = "https://meli.la/2QZ7Lxo"
         
         # Salva as URLs perfeitas de volta no objeto
         produto["link"] = url_limpa
