@@ -1,0 +1,219 @@
+/* 1. RESET DE MARGENS: Essencial para colar as barras nas bordas da tela */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* 2. BARRA AMARELA */
+.topo-amarelo {
+    background-color: #fff200;
+    width: 100%;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+/* 2.1 ESTILIZAÇÃO DO NOVO MENU DE NAVEGAÇÃO */
+.menu-navegacao {
+    display: flex;
+    gap: 25px; /* Espaço entre cada link do menu */
+}
+
+.menu-navegacao a {
+    text-decoration: none; /* Remove o sublinhado padrão dos links */
+    color: #000000; /* Cor preta para o texto */
+    font-size: 1rem;
+    font-weight: 600;
+    transition: color 0.2s ease; /* Efeito suave ao passar o mouse */
+}
+
+/* Efeito ao passar o mouse por cima do link (Hover) */
+.menu-navegacao a:hover {
+    color: #0056b3; /* O link fica azul igual à palavra "Desconto" */
+}
+
+.logo {
+    font-size: 1.4rem;
+    color: #000;
+}
+
+.logo span {
+    color: #0056b3; /* Cor azul para a palavra "Desconto" */
+}
+
+.selo {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* 3. BARRA PRETA: Colada na amarela e com 100% de largura */
+.banner-preto {
+    background-color: #0b1325; /* Azul escuro/preto idêntico ao seu */
+    color: #ffffff;
+    width: 100%;
+    padding: 60px 5%;
+    text-align: left;
+}
+
+.banner-preto h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.banner-preto p {
+    font-size: 1.1rem;
+    color: #a0aec0;
+}
+
+/* 4. ESTRUTURA DOS ARTIGOS DO BLOG */
+.container-blog {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.card-artigo {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-artigo img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover; /* Recorta a foto sem distorcer */
+}
+
+.conteudo-artigo {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.conteudo-artigo h2 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    color: #0b1325;
+}
+
+.conteudo-artigo p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #666;
+    margin-bottom: 20px;
+    
+    /* Lembra do line-clamp do início? Aplicado perfeitamente aqui: */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.btn-ler {
+    margin-top: auto;
+    background-color: #0b1325;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-ler:hover {
+    background-color: #fff200;
+    color: #000;
+}
+/* 5. ESTRUTURA DO RODAPÉ */
+.rodape-blog {
+    background-color: #0b1325; /* Mesmo azul escuro/preto do banner principal */
+    color: #ffffff;
+    width: 100%;
+    padding: 30px 20px;
+    margin-top: 60px; /* Cria um espaço saudável entre os artigos e o rodapé */
+    text-align: center;
+}
+
+.conteudo-rodape p {
+    font-size: 0.95rem;
+    color: #a0aec0; /* Cor cinza clara para leitura confortável */
+    margin-bottom: 10px;
+}
+
+.conteudo-rodape .aviso-legal {
+    font-size: 0.8rem;
+    color: #718096; /* Cinza um pouco mais escuro para o aviso menor */
+    max-width: 800px;
+    margin: 0 auto; /* Centraliza o bloco de texto do aviso */
+    line-height: 1.4;
+}
+/* ==========================================================================
+   6. RESPONSIVIDADE (Ajustes para Celulares e Telas Pequenas)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    
+    /* Ajusta o topo amarelo para não espremer os elementos */
+    .topo-amarelo {
+        flex-direction: column; /* Empilha a logo, o menu e o selo em linhas */
+        gap: 15px;
+        text-align: center;
+        padding: 20px 5%;
+    }
+
+    /* Dá mais espaço para os links do menu no celular (fácil de clicar com o dedo) */
+    .menu-navegacao {
+        gap: 15px;
+        flex-wrap: wrap; /* Se não couber na linha, quebra para a de baixo */
+        justify-content: center;
+    }
+
+    /* Diminui o tamanho do título do banner preto para não quebrar feio */
+    .banner-preto h1 {
+        font-size: 1.6rem;
+    }
+    
+    .banner-preto p {
+        font-size: 1rem;
+    }
+
+    /* Faz os blocos de artigos na página inicial ocuparem a tela toda */
+    .container-blog {
+        grid-template-columns: 1fr; /* Força um artigo por linha */
+        margin: 20px auto;
+    }
+
+    /* AJUSTE DO CARD DE AFILIADO (Dentro do artigo) */
+    /* Como aplicamos o estilo direto no HTML, este comando no CSS força ele 
+       a virar uma coluna no celular de forma automática */
+    main div[style*="display: flex"] {
+        flex-direction: column !important;
+        text-align: center;
+        padding: 20px !important;
+    }
+
+    /* Centraliza a imagem do produto dentro do card no celular */
+    main div[style*="display: flex"] img {
+        width: 100px !important;
+        height: 100px !important;
+        margin: 0 auto;
+    }
+}
