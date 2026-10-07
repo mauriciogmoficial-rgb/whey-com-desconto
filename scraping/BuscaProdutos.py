@@ -218,7 +218,7 @@ def extrair_dados_do_html_local():
         except Exception:
             continue
 
-    with open("rodizios.json", "w", encoding="utf-8") as arquivo_json:
+    with open("parafusos.json", "w", encoding="utf-8") as arquivo_json:
         json.dump(lista_produtos, arquivo_json, indent=2, ensure_ascii=False)
 
     print(f"\n[SUCESSO] Processo concluído! Foram salvos {len(lista_produtos)} produtos validados e sem erros.")
